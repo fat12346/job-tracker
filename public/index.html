@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application Tracker</title>
+  <style>
+    /* === Reset & Variables === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f4f7f5;
+      --color-text: #1a2e1a;
+      --color-text-secondary: #5a6e5a;
+      --color-border: #d4ddd7;
+      --color-primary: #1b3a2a;
+      --color-primary-hover: #264d38;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+      /* Status colours */
+      --status-applied: #2e7d32;
+      --status-applied-bg: #e8f5e9;
+      --status-want: #1565c0;
+      --status-want-bg: #e3f2fd;
+      --status-interview: #ef6c00;
+      --status-interview-bg: #fff3e0;
+      --status-offered: #6a1b9a;
+      --status-offered-bg: #f3e5f5;
+      --status-rejected: #c62828;
+      --status-rejected-bg: #ffebee;
+
+      /* IR35 colours */
+      --ir35-outside: #2e7d32;
+      --ir35-outside-bg: #e8f5e9;
+      --ir35-inside: #ef6c00;
+      --ir35-inside-bg: #fff3e0;
+
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* === Base === */
+    body {
+      font-family: var(--font);
+      background: var(--color-bg-alt);
+      color: var(--color-text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Header === */
+    header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 24px 24px 20px;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .job-count {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-left: 12px;
+    }
+
+    .btn-add {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #fff;
+      color: var(--color-primary);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-add:hover {
+      background: #f0f0f0;
+      transform: translateY(-1px);
+    }
+
+    /* === Main Content === */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 24px 60px;
+    }
+
+    /* === Filter Bar === */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .filter-btn {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      font-weight: 500;
+      transition: all 0.2s;
+      font-family: var(--font);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    /* === Controls Row (search, sort, view toggle) === */
+    .controls-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      background: var(--color-bg);
+      color: var(--color-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus {
+      border-color: var(--color-primary);
+    }
+
+    .search-box::placeholder {
+      color: #aaa;
+    }
+
+    .sort-select {
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      background: var(--color-bg);
+      cursor: pointer;
+      color: var(--color-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .sort-select:focus {
+      border-color: var(--color-primary);
+    }
+
+    /* === View Toggle === */
+    .view-toggle {
+      display: flex;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .view-btn {
+      padding: 10px 14px;
+      background: var(--color-bg);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .view-btn + .view-btn {
+      border-left: 1px solid var(--color-border);
+    }
+
+    .view-btn:hover {
+      background: var(--color-bg-alt);
+    }
+
+    .view-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Small icons for the view toggle buttons */
+    .view-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* === Job Cards (Card View) === */
+    .cards-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .cards-container.view-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .job-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s;
+    }
+
+    .job-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .card-company {
+      font-size: 0.95rem;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    .card-recruiter {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    /* === Status & IR35 Badges === */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-applied {
+      background: var(--status-applied-bg);
+      color: var(--status-applied);
+    }
+
+    .badge-want-to-apply {
+      background: var(--status-want-bg);
+      color: var(--status-want);
+    }
+
+    .badge-interview {
+      background: var(--status-interview-bg);
+      color: var(--status-interview);
+    }
+
+    .badge-offered {
+      background: var(--status-offered-bg);
+      color: var(--status-offered);
+    }
+
+    .badge-rejected {
+      background: var(--status-rejected-bg);
+      color: var(--status-rejected);
+    }
+
+    .badge-ir35-outside {
+      background: var(--ir35-outside-bg);
+      color: var(--ir35-outside);
+    }
+
+    .badge-ir35-inside {
+      background: var(--ir35-inside-bg);
+      color: var(--ir35-inside);
+    }
+
+    /* === Card Details === */
+    .card-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      margin: 10px 0;
+      font-size: 0.88rem;
+      color: var(--color-text-secondary);
+    }
+
+    .card-detail {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-detail-label {
+      font-weight: 600;
+      color: var(--color-text);
+      font-size: 0.8rem;
+    }
+
+    .card-notes {
+      font-size: 0.88rem;
+      color: var(--color-text-secondary);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .card-notes-label {
+      font-weight: 600;
+      color: var(--color-text);
+      font-size: 0.8rem;
+    }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .card-link:hover {
+      text-decoration: underline;
+    }
+
+    /* === Card Actions === */
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .btn-edit, .btn-delete {
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: var(--font);
+      font-weight: 500;
+      border: 1px solid var(--color-border);
+      transition: all 0.2s;
+    }
+
+    .btn-edit {
+      background: transparent;
+      color: var(--color-text);
+    }
+
+    .btn-edit:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn-delete {
+      background: transparent;
+      color: var(--color-text-secondary);
+    }
+
+    .btn-delete:hover {
+      border-color: var(--status-rejected);
+      color: var(--status-rejected);
+    }
+
+    /* === List View === */
+    .cards-container.view-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .cards-container.view-list .job-card {
+      display: none;
+    }
+
+    .list-row {
+      display: none;
+    }
+
+    .cards-container.view-list .list-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-bottom: none;
+      font-size: 0.88rem;
+      transition: background 0.15s;
+    }
+
+    .cards-container.view-list .list-row:first-child {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .cards-container.view-list .list-row:last-child {
+      border-bottom: 1px solid var(--color-border);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .cards-container.view-list .list-row:only-child {
+      border-radius: var(--radius);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .cards-container.view-list .list-row:hover {
+      background: var(--color-bg-alt);
+    }
+
+    .list-title {
+      font-weight: 600;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-company {
+      color: var(--color-text-secondary);
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-rate {
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .list-location {
+      color: var(--color-text-secondary);
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .list-badges {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .list-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .list-actions .btn-edit,
+    .list-actions .btn-delete {
+      padding: 4px 10px;
+      font-size: 0.78rem;
+    }
+
+    /* === Empty State === */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--color-text-secondary);
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .empty-state .empty-hint {
+      font-size: 0.88rem;
+    }
+
+    /* === Modal Overlay === */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+    }
+
+    .modal h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* === Form === */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      color: var(--color-text);
+      background: var(--color-bg);
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--color-primary);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #aaa;
+    }
+
+    .form-group textarea {
+      height: 80px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .btn-save {
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .btn-save:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-cancel {
+      display: inline-block;
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* === Confirm Dialog === */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .confirm-overlay.open {
+      display: flex;
+    }
+
+    .confirm-box {
+      background: var(--color-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 28px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .confirm-box p {
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn-confirm-delete {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--status-rejected);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .btn-confirm-delete:hover {
+      background: #b71c1c;
+    }
+
+    .btn-confirm-cancel {
+      display: inline-block;
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-confirm-cancel:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* === Footer === */
+    footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--color-text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* === Responsive === */
+
+    /* Two-column cards on wider screens */
+    @media (min-width: 700px) {
+      .cards-container.view-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      header {
+        padding: 18px 16px;
+      }
+
+      .header-inner {
+        gap: 10px;
+      }
+
+      header h1 {
+        font-size: 1.15rem;
+      }
+
+      main {
+        padding: 16px 16px 48px;
+      }
+
+      .cards-container.view-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .job-card {
+        padding: 16px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .modal {
+        padding: 20px;
+      }
+
+      .card-details {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      /* Larger touch targets on mobile */
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 12px 14px;
+        font-size: 1rem;
+      }
+
+      .filter-btn {
+        padding: 8px 14px;
+      }
+
+      /* Stack list rows on mobile for readability */
+      .cards-container.view-list .list-row {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .list-info {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .list-location {
+        display: none;
+      }
+    }
+
+    /* Small phones */
+    @media (max-width: 400px) {
+      header {
+        padding: 14px 12px;
+      }
+
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn-add {
+        width: 100%;
+        text-align: center;
+      }
+
+      main {
+        padding: 12px 12px 40px;
+      }
+    }
+
+    /* === Toast Notification === */
+    .sync-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--color-primary);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      z-index: 3000;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .sync-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>Job Application Tracker <span class="job-count" id="jobCount">0 applications</span></h1>
+      </div>
+      <button class="btn-add" id="btnAdd">+ Add New Job</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Filter Buttons -->
+    <nav class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="applied">Applied</button>
+      <button class="filter-btn" data-filter="want-to-apply">Want to Apply</button>
+      <button class="filter-btn" data-filter="interview">Interview</button>
+      <button class="filter-btn" data-filter="offered">Offered</button>
+      <button class="filter-btn" data-filter="rejected">Rejected</button>
+    </nav>
+
+    <!-- Search, Sort & View Toggle -->
+    <div class="controls-row">
+      <input type="text" class="search-box" id="searchBox" placeholder="Search by job title, company, or recruiter...">
+      <select class="sort-select" id="sortSelect">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="company">Company A-Z</option>
+        <option value="rate-high">Highest rate first</option>
+      </select>
+      <!-- View toggle: Cards or List -->
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="cards" title="Card view">
+          <span class="view-icon">&#9638;</span> Cards
+        </button>
+        <button class="view-btn" data-view="list" title="List view">
+          <span class="view-icon">&#9776;</span> List
+        </button>
+      </div>
+    </div>
+
+    <!-- Job Cards / List -->
+    <section class="cards-container view-cards" id="cardsContainer"></section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Your data syncs automatically across all your devices.</p>
+  </footer>
+
+  <!-- Toast notification -->
+  <div class="sync-toast" id="syncToast"></div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 id="modalTitle">Add New Job</h2>
+      <form id="jobForm">
+        <div class="form-group">
+          <label for="fieldTitle">Job Title *</label>
+          <input type="text" id="fieldTitle" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldCompany">Company *</label>
+            <input type="text" id="fieldCompany" required>
+          </div>
+          <div class="form-group">
+            <label for="fieldRecruiter">Recruiter / Agency</label>
+            <input type="text" id="fieldRecruiter">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fieldLocation">Location</label>
+          <input type="text" id="fieldLocation">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldIR35">IR35 Status</label>
+            <select id="fieldIR35">
+              <option value="unspecified">Not specified</option>
+              <option value="outside">Outside IR35</option>
+              <option value="inside">Inside IR35</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fieldRate">Day Rate (&pound;)</label>
+            <input type="text" id="fieldRate" placeholder="e.g. 600 or 550-700">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldDuration">Contract Duration</label>
+            <input type="text" id="fieldDuration" placeholder="e.g. 6 months">
+          </div>
+          <div class="form-group">
+            <label for="fieldStatus">Status</label>
+            <select id="fieldStatus">
+              <option value="want-to-apply">Want to Apply</option>
+              <option value="applied">Applied</option>
+              <option value="interview">Interview</option>
+              <option value="offered">Offered</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="dateGroup">
+          <label for="fieldDate">Date Applied</label>
+          <input type="date" id="fieldDate">
+        </div>
+
+        <div class="form-group">
+          <label for="fieldLink">Link to Job Ad</label>
+          <input type="url" id="fieldLink" placeholder="https://...">
+        </div>
+
+        <div class="form-group">
+          <label for="fieldNotes">Notes</label>
+          <textarea id="fieldNotes" placeholder="Any extra details..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" id="btnCancel">Cancel</button>
+          <button type="submit" class="btn-save" id="btnSave">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <p id="confirmMessage">Are you sure you want to remove this job?</p>
+      <div class="confirm-actions">
+        <button class="btn-confirm-cancel" id="btnConfirmCancel">Cancel</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* === Constants === */
+    const STORAGE_KEY = 'jobTracker_jobs';
+    const API_URL = '/api/jobs';
+
+    const STATUS_LABELS = {
+      'want-to-apply': 'Want to Apply',
+      'applied': 'Applied',
+      'interview': 'Interview',
+      'offered': 'Offered',
+      'rejected': 'Rejected'
+    };
+
+    const IR35_LABELS = {
+      'outside': 'Outside IR35',
+      'inside': 'Inside IR35',
+      'unspecified': ''
+    };
+
+    /* === State === */
+    let jobs = [];
+    let activeFilter = 'all';
+    let searchTerm = '';
+    let sortBy = 'newest';
+    let viewMode = 'cards';
+    let editingId = null;
+    let deleteId = null;
+
+    /* === DOM References === */
+    const cardsContainer = document.getElementById('cardsContainer');
+    const jobCount = document.getElementById('jobCount');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const jobForm = document.getElementById('jobForm');
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    const confirmMessage = document.getElementById('confirmMessage');
+    const searchBox = document.getElementById('searchBox');
+    const sortSelect = document.getElementById('sortSelect');
+    const filterBar = document.getElementById('filterBar');
+    const dateGroup = document.getElementById('dateGroup');
+    const fieldStatus = document.getElementById('fieldStatus');
+
+    /* === Storage (server-synced with localStorage fallback) === */
+
+    /* Save jobs to the server, with localStorage as a fast local cache */
+    function saveJobs() {
+      // Save locally first for instant responsiveness
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs)); } catch (e) {}
+
+      // Then save to the server in the background
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jobs)
+      }).catch(function(err) {
+        showToast('Could not save to server. Your changes are saved locally.');
+      });
+    }
+
+    /* Load jobs from the server on startup */
+    async function initJobs() {
+      try {
+        const response = await fetch(API_URL);
+        if (response.ok) {
+          const serverJobs = await response.json();
+          if (Array.isArray(serverJobs) && serverJobs.length > 0) {
+            jobs = serverJobs;
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs)); } catch (e) {}
+            return;
+          }
+        }
+      } catch (err) {
+        // Server unavailable, fall through to localStorage
+      }
+
+      // Fallback: load from localStorage if server failed or returned empty
+      try {
+        const localData = localStorage.getItem(STORAGE_KEY);
+        if (localData) {
+          jobs = JSON.parse(localData);
+          return;
+        }
+      } catch (e) {}
+
+      // No data anywhere, start empty
+      jobs = [];
+    }
+
+    /* Toast notification for status messages */
+    function showToast(message) {
+      var toast = document.getElementById('syncToast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 5000);
+    }
+
+    /* === Formatting Helpers === */
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const day = parseInt(parts[2], 10);
+      const month = months[parseInt(parts[1], 10) - 1];
+      const year = parts[0];
+      return day + ' ' + month + ' ' + year;
+    }
+
+    function formatRate(rate) {
+      if (!rate) return '';
+      return '\u00A3' + rate + '/day';
+    }
+
+    function parseRate(rate) {
+      if (!rate) return 0;
+      const match = rate.match(/\d+/);
+      return match ? parseInt(match[0], 10) : 0;
+    }
+
+    function getStatusBadgeClass(status) {
+      return 'badge badge-' + status;
+    }
+
+    function getIR35BadgeClass(ir35) {
+      if (ir35 === 'outside') return 'badge badge-ir35-outside';
+      if (ir35 === 'inside') return 'badge badge-ir35-inside';
+      return '';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* === Filtering & Sorting === */
+    function getFilteredAndSorted() {
+      let filtered = jobs.slice();
+
+      // Filter by status
+      if (activeFilter !== 'all') {
+        filtered = filtered.filter(function(job) {
+          return job.status === activeFilter;
+        });
+      }
+
+      // Filter by search term (searches title, company, recruiter, and notes)
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        filtered = filtered.filter(function(job) {
+          return (job.title && job.title.toLowerCase().includes(term)) ||
+                 (job.company && job.company.toLowerCase().includes(term)) ||
+                 (job.recruiter && job.recruiter.toLowerCase().includes(term)) ||
+                 (job.notes && job.notes.toLowerCase().includes(term));
+        });
+      }
+
+      // Sort
+      filtered.sort(function(a, b) {
+        if (sortBy === 'newest') {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        if (sortBy === 'oldest') {
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        }
+        if (sortBy === 'company') {
+          return (a.company || '').localeCompare(b.company || '');
+        }
+        if (sortBy === 'rate-high') {
+          return parseRate(b.rate) - parseRate(a.rate);
+        }
+        return 0;
+      });
+
+      return filtered;
+    }
+
+    /* === Rendering === */
+    function renderJobs() {
+      const filtered = getFilteredAndSorted();
+
+      // Update the job count in the header
+      const total = jobs.length;
+      const showing = filtered.length;
+      if (total === showing) {
+        jobCount.textContent = total + ' application' + (total !== 1 ? 's' : '');
+      } else {
+        jobCount.textContent = 'Showing ' + showing + ' of ' + total;
+      }
+
+      // Set the correct CSS class for the current view mode
+      cardsContainer.className = 'cards-container view-' + viewMode;
+
+      // Empty state
+      if (filtered.length === 0) {
+        if (jobs.length === 0) {
+          cardsContainer.innerHTML = '<div class="empty-state"><p>No jobs tracked yet.</p><p class="empty-hint">Click "+ Add New Job" to get started.</p></div>';
+        } else {
+          cardsContainer.innerHTML = '<div class="empty-state"><p>No jobs match your filters.</p><p class="empty-hint">Try a different filter or clear your search.</p></div>';
+        }
+        return;
+      }
+
+      // Build HTML for both card and list views
+      let html = '';
+      filtered.forEach(function(job) {
+        html += renderCard(job);
+        html += renderListRow(job);
+      });
+      cardsContainer.innerHTML = html;
+    }
+
+    /* Renders a full card (shown in card view, hidden in list view) */
+    function renderCard(job) {
+      const statusLabel = STATUS_LABELS[job.status] || job.status;
+      const statusBadge = '<span class="' + getStatusBadgeClass(job.status) + '">' + statusLabel + '</span>';
+
+      let ir35Badge = '';
+      if (job.ir35 && job.ir35 !== 'unspecified') {
+        const ir35Label = IR35_LABELS[job.ir35];
+        ir35Badge = '<span class="' + getIR35BadgeClass(job.ir35) + '">' + ir35Label + '</span>';
+      }
+
+      let detailsHtml = '';
+      if (job.location) {
+        detailsHtml += '<span class="card-detail"><span class="card-detail-label">Location</span> ' + escapeHtml(job.location) + '</span>';
+      }
+      if (job.rate) {
+        detailsHtml += '<span class="card-detail"><span class="card-detail-label">Rate</span> ' + formatRate(job.rate) + '</span>';
+      }
+      if (job.duration) {
+        detailsHtml += '<span class="card-detail"><span class="card-detail-label">Duration</span> ' + escapeHtml(job.duration) + '</span>';
+      }
+      if (job.dateApplied) {
+        detailsHtml += '<span class="card-detail"><span class="card-detail-label">Applied</span> ' + formatDate(job.dateApplied) + '</span>';
+      }
+
+      let notesHtml = '';
+      if (job.notes) {
+        notesHtml = '<div class="card-notes"><span class="card-notes-label">Notes</span> ' + escapeHtml(job.notes) + '</div>';
+      }
+
+      let linkHtml = '';
+      if (job.jobLink) {
+        linkHtml = '<a class="card-link" href="' + escapeHtml(job.jobLink) + '" target="_blank" rel="noopener">View Job Ad</a>';
+      }
+
+      return '<article class="job-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<div class="card-title">' + escapeHtml(job.title) + '</div>' +
+            '<div class="card-company">' + escapeHtml(job.company) + '</div>' +
+            (job.recruiter ? '<div class="card-recruiter">Recruiter: ' + escapeHtml(job.recruiter) + '</div>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">' + statusBadge + ir35Badge + '</div>' +
+        '</div>' +
+        (detailsHtml ? '<div class="card-details">' + detailsHtml + '</div>' : '') +
+        notesHtml +
+        linkHtml +
+        '<div class="card-actions">' +
+          '<button class="btn-edit" data-id="' + job.id + '">Edit</button>' +
+          '<button class="btn-delete" data-id="' + job.id + '" aria-label="Remove ' + escapeHtml(job.title) + ' at ' + escapeHtml(job.company) + '">Remove</button>' +
+        '</div>' +
+      '</article>';
+    }
+
+    /* Renders a compact list row (shown in list view, hidden in card view) */
+    function renderListRow(job) {
+      const statusLabel = STATUS_LABELS[job.status] || job.status;
+      const statusBadge = '<span class="' + getStatusBadgeClass(job.status) + '">' + statusLabel + '</span>';
+
+      let ir35Badge = '';
+      if (job.ir35 && job.ir35 !== 'unspecified') {
+        const ir35Label = IR35_LABELS[job.ir35];
+        ir35Badge = '<span class="' + getIR35BadgeClass(job.ir35) + '">' + ir35Label + '</span>';
+      }
+
+      const rateText = job.rate ? formatRate(job.rate) : '';
+
+      return '<div class="list-row">' +
+        '<div class="list-info">' +
+          '<span class="list-title">' + escapeHtml(job.title) + '</span>' +
+          '<span class="list-company">' + escapeHtml(job.company) + '</span>' +
+          (rateText ? '<span class="list-rate">' + rateText + '</span>' : '') +
+          (job.location ? '<span class="list-location">' + escapeHtml(job.location) + '</span>' : '') +
+        '</div>' +
+        '<div class="list-badges">' + statusBadge + ir35Badge + '</div>' +
+        '<div class="list-actions">' +
+          '<button class="btn-edit" data-id="' + job.id + '">Edit</button>' +
+          '<button class="btn-delete" data-id="' + job.id + '">Remove</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    /* === Modal === */
+    function openModal(jobId) {
+      editingId = jobId || null;
+
+      if (editingId) {
+        modalTitle.textContent = 'Edit Job';
+        document.getElementById('btnSave').textContent = 'Update';
+        const job = jobs.find(function(j) { return j.id === editingId; });
+        if (job) {
+          document.getElementById('fieldTitle').value = job.title || '';
+          document.getElementById('fieldCompany').value = job.company || '';
+          document.getElementById('fieldRecruiter').value = job.recruiter || '';
+          document.getElementById('fieldLocation').value = job.location || '';
+          document.getElementById('fieldIR35').value = job.ir35 || 'unspecified';
+          document.getElementById('fieldRate').value = job.rate || '';
+          document.getElementById('fieldDuration').value = job.duration || '';
+          document.getElementById('fieldStatus').value = job.status || 'want-to-apply';
+          document.getElementById('fieldDate').value = job.dateApplied || '';
+          document.getElementById('fieldLink').value = job.jobLink || '';
+          document.getElementById('fieldNotes').value = job.notes || '';
+        }
+      } else {
+        modalTitle.textContent = 'Add New Job';
+        document.getElementById('btnSave').textContent = 'Save';
+        jobForm.reset();
+        document.getElementById('fieldStatus').value = 'want-to-apply';
+      }
+
+      toggleDateField();
+      modalOverlay.classList.add('open');
+      document.getElementById('fieldTitle').focus();
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('open');
+      editingId = null;
+      jobForm.reset();
+    }
+
+    /* Show/hide the date field based on status (hide for "Want to Apply") */
+    function toggleDateField() {
+      const status = fieldStatus.value;
+      if (status === 'want-to-apply') {
+        dateGroup.style.display = 'none';
+      } else {
+        dateGroup.style.display = 'block';
+      }
+    }
+
+    /* === CRUD Operations === */
+    function addJob(data) {
+      const now = new Date().toISOString();
+      const job = {
+        id: 'job-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
+        title: data.title,
+        company: data.company,
+        recruiter: data.recruiter,
+        location: data.location,
+        ir35: data.ir35,
+        rate: data.rate,
+        duration: data.duration,
+        status: data.status,
+        dateApplied: data.dateApplied,
+        jobLink: data.jobLink,
+        notes: data.notes,
+        createdAt: now,
+        updatedAt: now
+      };
+      jobs.push(job);
+      saveJobs();
+      renderJobs();
+    }
+
+    function updateJob(id, data) {
+      const idx = jobs.findIndex(function(j) { return j.id === id; });
+      if (idx === -1) return;
+      jobs[idx] = Object.assign({}, jobs[idx], data, { updatedAt: new Date().toISOString() });
+      saveJobs();
+      renderJobs();
+    }
+
+    function deleteJob(id) {
+      jobs = jobs.filter(function(j) { return j.id !== id; });
+      saveJobs();
+      renderJobs();
+    }
+
+    /* === Confirm Dialog === */
+    function openConfirm(id) {
+      deleteId = id;
+      const job = jobs.find(function(j) { return j.id === id; });
+      if (job) {
+        confirmMessage.textContent = 'Are you sure you want to remove "' + job.title + '" at ' + job.company + '?';
+      }
+      confirmOverlay.classList.add('open');
+    }
+
+    function closeConfirm() {
+      confirmOverlay.classList.remove('open');
+      deleteId = null;
+    }
+
+    /* === Event Listeners === */
+    document.addEventListener('DOMContentLoaded', async function() {
+      await initJobs();
+      renderJobs();
+
+      // Add new job button
+      document.getElementById('btnAdd').addEventListener('click', function() {
+        openModal();
+      });
+
+      // Modal close
+      document.getElementById('btnCancel').addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) closeModal();
+      });
+
+      // Toggle date field visibility when status changes
+      fieldStatus.addEventListener('change', toggleDateField);
+
+      // Form submission (add or edit)
+      jobForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+          title: document.getElementById('fieldTitle').value.trim(),
+          company: document.getElementById('fieldCompany').value.trim(),
+          recruiter: document.getElementById('fieldRecruiter').value.trim(),
+          location: document.getElementById('fieldLocation').value.trim(),
+          ir35: document.getElementById('fieldIR35').value,
+          rate: document.getElementById('fieldRate').value.trim(),
+          duration: document.getElementById('fieldDuration').value.trim(),
+          status: document.getElementById('fieldStatus').value,
+          dateApplied: document.getElementById('fieldDate').value,
+          jobLink: document.getElementById('fieldLink').value.trim(),
+          notes: document.getElementById('fieldNotes').value.trim()
+        };
+
+        if (!data.title || !data.company) return;
+
+        if (editingId) {
+          updateJob(editingId, data);
+        } else {
+          addJob(data);
+        }
+        closeModal();
+      });
+
+      // Edit and delete buttons on cards/list rows (event delegation)
+      cardsContainer.addEventListener('click', function(e) {
+        const editBtn = e.target.closest('.btn-edit');
+        const deleteBtn = e.target.closest('.btn-delete');
+
+        if (editBtn) {
+          openModal(editBtn.dataset.id);
+        }
+        if (deleteBtn) {
+          openConfirm(deleteBtn.dataset.id);
+        }
+      });
+
+      // Confirm delete
+      document.getElementById('btnConfirmDelete').addEventListener('click', function() {
+        if (deleteId) {
+          deleteJob(deleteId);
+        }
+        closeConfirm();
+      });
+      document.getElementById('btnConfirmCancel').addEventListener('click', closeConfirm);
+      confirmOverlay.addEventListener('click', function(e) {
+        if (e.target === confirmOverlay) closeConfirm();
+      });
+
+      // Filter buttons
+      filterBar.addEventListener('click', function(e) {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        activeFilter = btn.dataset.filter;
+        filterBar.querySelectorAll('.filter-btn').forEach(function(b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        renderJobs();
+      });
+
+      // Sort dropdown
+      sortSelect.addEventListener('change', function() {
+        sortBy = sortSelect.value;
+        renderJobs();
+      });
+
+      // Search with a short delay so it doesn't re-render on every keystroke
+      let searchTimeout;
+      searchBox.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+          searchTerm = searchBox.value.trim();
+          renderJobs();
+        }, 250);
+      });
+
+      // View toggle (Cards / List)
+      document.querySelectorAll('.view-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          viewMode = btn.dataset.view;
+          document.querySelectorAll('.view-btn').forEach(function(b) {
+            b.classList.remove('active');
+          });
+          btn.classList.add('active');
+          renderJobs();
+        });
+      });
+
+      // Escape key closes modals
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          if (confirmOverlay.classList.contains('open')) {
+            closeConfirm();
+          } else if (modalOverlay.classList.contains('open')) {
+            closeModal();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
