@@ -1,6 +1,12 @@
-const { kv } = require('@vercel/kv');
+const { Redis } = require('@upstash/redis');
 
 const KV_KEY = 'tracker_jobs';
+
+// Create Redis client using environment variables set by Vercel integration
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
 
 module.exports = async function handler(req, res) {
   // Allow requests from any origin (single-user app)
@@ -14,7 +20,7 @@ module.exports = async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
-      const jobs = await kv.get(KV_KEY);
+      const jobs = await redis.get(KV_KEY);
       return res.status(200).json(jobs || []);
     }
 
@@ -25,7 +31,7 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Expected an array of jobs' });
       }
 
-      await kv.set(KV_KEY, jobs);
+      await redis.set(KV_KEY, jobs);
       return res.status(200).json({ success: true });
     }
 
@@ -33,14 +39,10 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     console.error('API error:', error);
 
-    // If KV is not configured yet, return empty data gracefully
-    if (error.message && error.message.includes('REDIS')) {
-      if (req.method === 'GET') {
-        return res.status(200).json([]);
-      }
-      return res.status(503).json({ error: 'Database not connected yet. Add Vercel KV in your project settings.' });
+    // If Redis is not configured yet, return empty data gracefully
+    if (req.method === 'GET') {
+      return res.status(200).json([]);
     }
-
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(503).json({ error: 'Database not connected yet.' });
   }
 };
