@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Prep - Job Application Tracker</title>
+  <style>
+    /* === Reset & Variables (matching main site) === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f4f7f5;
+      --color-text: #1a2e1a;
+      --color-text-secondary: #5a6e5a;
+      --color-border: #d4ddd7;
+      --color-primary: #1b3a2a;
+      --color-primary-hover: #264d38;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+      /* Category colours */
+      --cat-behavioural: #2e7d32;
+      --cat-behavioural-bg: #e8f5e9;
+      --cat-competency: #1565c0;
+      --cat-competency-bg: #e3f2fd;
+      --cat-scenario: #ef6c00;
+      --cat-scenario-bg: #fff3e0;
+
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* === Base === */
+    body {
+      font-family: var(--font);
+      background: var(--color-bg-alt);
+      color: var(--color-text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Header === */
+    header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 24px 24px 20px;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .header-subtitle {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .btn-back {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #fff;
+      color: var(--color-primary);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-back:hover {
+      background: #f0f0f0;
+      transform: translateY(-1px);
+    }
+
+    /* === Main Content === */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 24px 60px;
+    }
+
+    /* === Category Filter === */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-btn {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      font-weight: 500;
+      transition: all 0.2s;
+      font-family: var(--font);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    .filter-count {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-left: 4px;
+    }
+
+    /* === Stats Summary === */
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 120px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    /* === Question Cards === */
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .question-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: var(--shadow);
+    }
+
+    .question-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .question-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .question-card .question-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-text);
+      flex: 1;
+    }
+
+    .category-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .category-badge.behavioural {
+      background: var(--cat-behavioural-bg);
+      color: var(--cat-behavioural);
+    }
+
+    .category-badge.competency {
+      background: var(--cat-competency-bg);
+      color: var(--cat-competency);
+    }
+
+    .category-badge.scenario {
+      background: var(--cat-scenario-bg);
+      color: var(--cat-scenario);
+    }
+
+    .question-card .why-asked {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    /* === Expanded Question Detail === */
+    .question-detail {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .question-detail.open {
+      display: block;
+    }
+
+    .detail-section {
+      margin-bottom: 16px;
+    }
+
+    .detail-section h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-section ul, .detail-section ol {
+      padding-left: 20px;
+    }
+
+    .detail-section li {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    .tip-item {
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .tip-item::before {
+      content: "\2713";
+      position: absolute;
+      left: 0;
+      color: var(--cat-behavioural);
+      font-weight: bold;
+    }
+
+    .click-hint {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 600px) {
+      .stats-row {
+        gap: 8px;
+      }
+      .stat-card {
+        min-width: 80px;
+        padding: 12px;
+      }
+      .stat-card .number {
+        font-size: 1.4rem;
+      }
+      .question-card .card-header {
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>Interview Prep</h1>
+        <div class="header-subtitle">Business Architecture &amp; Business Analysis</div>
+      </div>
+      <a href="/" class="btn-back">&larr; Back to Tracker</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="number" id="totalCount">30</div>
+        <div class="label">Total Questions</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="behCount" style="color: var(--cat-behavioural)">10</div>
+        <div class="label">Behavioural</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="compCount" style="color: var(--cat-competency)">10</div>
+        <div class="label">Competency</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="scenCount" style="color: var(--cat-scenario)">10</div>
+        <div class="label">Scenario</div>
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-category="all">All <span class="filter-count">30</span></button>
+      <button class="filter-btn" data-category="behavioural">Behavioural (STAR) <span class="filter-count">10</span></button>
+      <button class="filter-btn" data-category="competency">Competency <span class="filter-count">10</span></button>
+      <button class="filter-btn" data-category="scenario">Scenario <span class="filter-count">10</span></button>
+    </div>
+
+    <p class="click-hint">Click any question to reveal the answer framework and tips</p>
+
+    <!-- Questions List -->
+    <div class="question-list" id="questionList"></div>
+
+  </main>
+
+  <script>
+    // === Question Data ===
+    const questions = [
+      {
+        "id": "beh-001",
+        "category": "behavioural",
+        "question": "Tell me about a time when you had to manage conflicting stakeholder requirements.",
+        "why_asked": "Interviewers want to see how you handle competing priorities and negotiate between different business areas.",
+        "framework": ["Situation: Describe the project and the stakeholders involved, including their roles and interests", "Task: Explain what the conflicting requirements were and why they mattered to each party", "Action: Describe how you facilitated discussions, used prioritisation techniques (MoSCoW, weighted scoring), and reached consensus", "Result: What was the outcome? How did both stakeholders feel about the resolution? What was the business impact?"],
+        "tips": ["Show empathy for all stakeholders, not just the one whose view prevailed", "Mention specific techniques you used (workshops, impact analysis, decision matrices)", "Quantify the result if possible (timeline saved, cost reduced, risk mitigated)", "Demonstrate that you understand the difference between needs and wants"]
+      },
+      {
+        "id": "beh-002",
+        "category": "behavioural",
+        "question": "Describe a situation where you had to influence a senior stakeholder to change their approach.",
+        "why_asked": "Tests your ability to challenge constructively and communicate upward.",
+        "framework": ["Situation: Set the scene with the organisation and the stakeholder's role", "Task: Explain what needed to change and why it mattered to the programme or organisation", "Action: How did you build your case? What evidence, data, or alternative options did you present?", "Result: Did they change their approach? What was the business impact?"],
+        "tips": ["Demonstrate respect for their position while showing confidence in your analysis", "Focus on presenting evidence rather than opinions", "Show awareness of organisational politics and how you navigated them", "Highlight that you chose the right time and setting for the conversation"]
+      },
+      {
+        "id": "beh-003",
+        "category": "behavioural",
+        "question": "Tell me about a time when you had to deal with significant ambiguity or uncertainty in a project.",
+        "why_asked": "BA and Business Architecture roles often involve working in ambiguous environments, particularly during early-stage transformation programmes.",
+        "framework": ["Situation: Describe the project and what made it ambiguous (unclear scope, conflicting information, no existing documentation)", "Task: Explain what you needed to deliver despite the uncertainty", "Action: How did you create structure? What techniques did you use to reduce ambiguity (workshops, research, prototyping, iterative delivery)?", "Result: How did the project turn out? What did you learn about working in uncertain environments?"],
+        "tips": ["Show comfort with ambiguity rather than frustration", "Mention frameworks you used to create structure (capability maps, value streams, process models)", "Demonstrate iterative thinking rather than trying to solve everything at once", "Highlight how you communicated uncertainty to stakeholders honestly"]
+      },
+      {
+        "id": "beh-004",
+        "category": "behavioural",
+        "question": "Give me an example of when you identified a gap or inefficiency in a business process and drove improvement.",
+        "why_asked": "Tests your analytical skills and proactive nature. Both BA and Business Architecture roles require you to spot opportunities for improvement.",
+        "framework": ["Situation: Describe the organisation and the process you were looking at", "Task: Explain how you identified the gap or inefficiency", "Action: What analysis did you do? How did you design the improvement? How did you get buy-in?", "Result: What improved? Quantify the impact (time saved, errors reduced, cost savings)"],
+        "tips": ["Show a structured approach to process analysis (as-is vs to-be, root cause analysis)", "Demonstrate that you considered the people and change management aspects", "Mention any tools or notations you used (BPMN, swim lanes, value stream mapping)", "Highlight that you measured the outcome, not just delivered the change"]
+      },
+      {
+        "id": "beh-005",
+        "category": "behavioural",
+        "question": "Describe a time when you had to quickly get up to speed in a new organisation or domain.",
+        "why_asked": "Particularly relevant for contractors, who need to add value quickly in unfamiliar environments.",
+        "framework": ["Situation: Describe the new organisation or domain and what made it challenging", "Task: What were you expected to deliver and within what timeframe?", "Action: How did you learn quickly? Who did you speak to? What documents did you review? How did you prioritise what to learn first?", "Result: How quickly were you contributing? What feedback did you receive?"],
+        "tips": ["Emphasise your systematic approach to learning (stakeholder maps, document reviews, shadowing)", "Show that you asked smart questions rather than waiting to be told everything", "Mention how you balanced learning with delivering early value", "Reference specific contracting experiences where rapid onboarding was critical"]
+      },
+      {
+        "id": "beh-006",
+        "category": "behavioural",
+        "question": "Tell me about a time when a project or initiative did not go as planned. How did you handle it?",
+        "why_asked": "Tests resilience, honesty, and problem-solving under pressure.",
+        "framework": ["Situation: Describe the project and what went wrong", "Task: What was your role and what was at stake?", "Action: How did you respond? What did you do to get things back on track? How did you communicate the issues?", "Result: What was the outcome? What did you learn?"],
+        "tips": ["Be honest about what went wrong without blaming others", "Show that you took ownership and acted decisively", "Demonstrate what you learned and how it changed your approach going forward", "Avoid choosing an example where you were a bystander"]
+      },
+      {
+        "id": "beh-007",
+        "category": "behavioural",
+        "question": "Give an example of when you had to bridge the gap between business and technology teams.",
+        "why_asked": "A core skill for both BAs and Business Architects. Tests that you can translate between business and technical language effectively.",
+        "framework": ["Situation: Describe the context and the two groups involved", "Task: What was the communication challenge or misalignment?", "Action: How did you facilitate understanding? What techniques did you use (workshops, visual models, prototypes, glossaries)?", "Result: What was the outcome? How did both sides feel about the resolution?"],
+        "tips": ["Show that you can genuinely understand both perspectives, not just act as a messenger", "Mention specific translation techniques (visual models, use cases, user stories, architecture diagrams)", "Demonstrate empathy for both sides and avoid taking sides", "Highlight the tangible outcome (better solution, faster delivery, fewer misunderstandings)"]
+      },
+      {
+        "id": "beh-008",
+        "category": "behavioural",
+        "question": "Describe a situation where you had to push back on a proposed solution because it did not align with the broader business strategy or architecture.",
+        "why_asked": "Tests your ability to think strategically and maintain architectural integrity, even under pressure.",
+        "framework": ["Situation: Describe the proposed solution and the broader context (strategy, architecture principles, target state)", "Task: Why was the proposed solution problematic? What risks did it create?", "Action: How did you communicate your concerns? What alternatives did you propose?", "Result: What happened? Was the solution changed? What was the long-term impact?"],
+        "tips": ["Show strategic thinking and an understanding of enterprise-level consequences", "Demonstrate that you proposed alternatives, not just objections", "Reference architecture principles, standards, or governance frameworks", "Be balanced; acknowledge the pressures the other party was under"]
+      },
+      {
+        "id": "beh-009",
+        "category": "behavioural",
+        "question": "Tell me about a time when you successfully facilitated a complex workshop or working session.",
+        "why_asked": "Facilitation is a critical skill for BAs and Business Architects.",
+        "framework": ["Situation: Describe the context and purpose of the workshop", "Task: What did the workshop need to achieve? Who was involved?", "Action: How did you plan and structure the session? What techniques did you use? How did you handle difficult participants or disagreements?", "Result: What was the outcome? What decisions were made? How was feedback?"],
+        "tips": ["Mention specific facilitation techniques (dot voting, affinity mapping, breakout groups, timeboxing)", "Show that you planned the session carefully with clear objectives and agenda", "Demonstrate how you handled challenging dynamics (dominant voices, quiet participants, tangents)", "Highlight tangible outputs from the workshop (decisions, action items, models)"]
+      },
+      {
+        "id": "beh-010",
+        "category": "behavioural",
+        "question": "Give an example of when you had to deliver difficult or unwelcome news to a stakeholder or sponsor.",
+        "why_asked": "Tests your communication skills and courage. Both BA and Business Architecture roles require honest communication.",
+        "framework": ["Situation: Describe the context and the difficult news", "Task: Why was this news important to communicate? What were the risks of not sharing it?", "Action: How did you prepare for the conversation? How did you deliver the message? What alternatives or recommendations did you offer?", "Result: How did the stakeholder react? What was the outcome?"],
+        "tips": ["Show that you prepared thoroughly before the conversation", "Demonstrate empathy and emotional intelligence in how you delivered the message", "Always pair bad news with options or recommendations", "Highlight that being honest built trust in the long run"]
+      },
+      {
+        "id": "comp-001",
+        "category": "competency",
+        "question": "How do you approach requirements gathering for a large transformation programme?",
+        "why_asked": "Tests your methodology and structured thinking around core BA activities.",
+        "framework": ["Explain your overall approach (iterative, stakeholder-led, context-dependent)", "Describe the techniques you use (workshops, interviews, document analysis, observation, surveys)", "Explain how you handle different levels of requirements (strategic, business, functional, non-functional)", "Discuss how you ensure traceability and manage change throughout the lifecycle", "Mention how you validate and prioritise requirements with stakeholders"],
+        "tips": ["Reference specific frameworks or standards (BABOK, IIBA, BCS)", "Give a concrete example from your experience to illustrate your approach", "Show awareness of how requirements connect to business outcomes, not just system features", "Mention how you tailor your approach based on the project context (agile vs waterfall)"]
+      },
+      {
+        "id": "comp-002",
+        "category": "competency",
+        "question": "What is your approach to stakeholder management on a complex programme?",
+        "why_asked": "Stakeholder management is fundamental to both BA and Business Architecture roles.",
+        "framework": ["Explain how you identify and map stakeholders (power/interest grid, RACI, stakeholder maps)", "Describe how you plan engagement for different stakeholder groups", "Discuss how you build and maintain relationships, particularly with senior stakeholders", "Explain how you handle difficult stakeholders or conflicting agendas", "Mention how you adapt your communication style for different audiences"],
+        "tips": ["Show that stakeholder management is proactive, not reactive", "Mention specific tools or techniques (stakeholder maps, communication plans, RACI matrices)", "Demonstrate emotional intelligence and political awareness", "Give examples of managing stakeholders at different levels (operational staff to C-suite)"]
+      },
+      {
+        "id": "comp-003",
+        "category": "competency",
+        "question": "How do you develop and maintain a business capability model?",
+        "why_asked": "Capability modelling is a core Business Architecture skill.",
+        "framework": ["Define what a business capability model is and why it matters (strategic planning, investment decisions, gap analysis)", "Explain your approach to building one (top-down decomposition, stakeholder workshops, industry reference models)", "Describe how you structure levels (Level 0, 1, 2, 3) and where to stop", "Discuss how you use capability models in practice (heat mapping, maturity assessment, linking to strategy)", "Explain how you keep the model current and relevant"],
+        "tips": ["Reference industry frameworks (BIAN for banking, eTOM for telecoms, or generic APQC)", "Emphasise that capabilities describe WHAT the business does, not HOW", "Show how capability models connect to other architecture views (value streams, information, organisation)", "Give a practical example of how a capability model drove a business decision"]
+      },
+      {
+        "id": "comp-004",
+        "category": "competency",
+        "question": "How do you ensure that business requirements align with the organisation's strategic objectives?",
+        "why_asked": "Tests your ability to think beyond individual requirements and connect work to business strategy.",
+        "framework": ["Explain how you understand the strategic context (reading strategy documents, talking to sponsors, reviewing business plans)", "Describe how you create traceability from strategy to requirements (objectives hierarchy, benefits mapping)", "Discuss techniques for validating alignment (impact assessment, strategic fit analysis)", "Explain what you do when requirements do not align with strategy"],
+        "tips": ["Show that you proactively seek out strategic context rather than waiting to be told", "Mention specific techniques (benefits mapping, objectives decomposition, strategy maps)", "Demonstrate that you can challenge requirements that do not support strategic goals", "Highlight the difference between tactical and strategic thinking"]
+      },
+      {
+        "id": "comp-005",
+        "category": "competency",
+        "question": "Describe your experience with process modelling and improvement. What notations and tools do you use?",
+        "why_asked": "Process modelling is a core BA competency.",
+        "framework": ["Describe the notations you use (BPMN 2.0, UML Activity Diagrams, swim lane diagrams) and why", "Explain your approach to as-is and to-be modelling", "Discuss how you identify improvement opportunities (bottlenecks, waste, handoff points, automation potential)", "Mention tools you have used (Visio, Signavio, ARIS, Bizagi, Miro)", "Explain how you validate process models with stakeholders"],
+        "tips": ["Show familiarity with BPMN 2.0 as the industry standard", "Demonstrate that you model to the right level of detail for the audience", "Mention how you use process models to drive decisions, not just to document", "Reference lean or six sigma concepts if you have experience with them"]
+      },
+      {
+        "id": "comp-006",
+        "category": "competency",
+        "question": "How do you approach change impact assessment when a significant change is proposed?",
+        "why_asked": "Tests your analytical rigour and ability to think holistically about change.",
+        "framework": ["Explain your framework for assessing impact (people, process, technology, data, policy, organisation)", "Describe how you identify affected stakeholders, systems, and processes", "Discuss how you assess severity and prioritise impacts", "Explain how impact assessments feed into change management and transition planning", "Mention how you communicate findings to stakeholders"],
+        "tips": ["Show a structured, repeatable approach rather than ad hoc analysis", "Demonstrate that you consider second-order effects (knock-on impacts)", "Mention how you work with change management colleagues to plan mitigations", "Give a specific example of an impact assessment you conducted"]
+      },
+      {
+        "id": "comp-007",
+        "category": "competency",
+        "question": "What is your understanding of value stream mapping and how have you applied it?",
+        "why_asked": "Value streams are a key Business Architecture concept.",
+        "framework": ["Define what a value stream is (the end-to-end set of activities that deliver value to a customer or stakeholder)", "Explain how you identify and map value streams", "Describe how you use value stream mapping to identify waste, bottlenecks, and improvement opportunities", "Discuss how value streams connect to capabilities, processes, and organisational structure", "Give a practical example of value stream analysis you have done"],
+        "tips": ["Distinguish between value streams (what delivers value) and processes (how work gets done)", "Show how value streams provide a customer-centric or outcome-centric view", "Reference lean thinking principles if appropriate", "Demonstrate that you use value streams as a strategic planning tool, not just documentation"]
+      },
+      {
+        "id": "comp-008",
+        "category": "competency",
+        "question": "How do you handle governance in a business architecture or BA context?",
+        "why_asked": "Tests your understanding of how architecture decisions are governed.",
+        "framework": ["Explain what governance means in this context (decision-making structures, standards, review processes)", "Describe governance frameworks you have worked within or helped establish", "Discuss how you ensure architecture decisions are reviewed and approved appropriately", "Explain how you balance governance rigour with agility and delivery speed", "Mention how you handle non-compliance or deviations from standards"],
+        "tips": ["Show that you see governance as enabling rather than blocking", "Reference enterprise architecture governance frameworks (TOGAF ADM, architecture boards)", "Demonstrate pragmatism; show you know when to apply light vs heavy governance", "Mention how governance connects to risk management and assurance"]
+      },
+      {
+        "id": "comp-009",
+        "category": "competency",
+        "question": "How do you ensure effective knowledge transfer when your contract ends?",
+        "why_asked": "Highly relevant for contractors. Interviewers want to know that you will leave behind value.",
+        "framework": ["Explain your approach to documentation throughout the engagement (not just at the end)", "Describe how you train and upskill permanent staff during the contract", "Discuss how you structure handover sessions and materials", "Mention how you ensure continuity of relationships and context", "Explain how you plan for knowledge transfer from day one"],
+        "tips": ["Show that knowledge transfer is built into your way of working, not an afterthought", "Mention specific deliverables you create (playbooks, how-to guides, recorded walkthroughs)", "Demonstrate that you actively develop permanent staff capability", "Reference examples where your knowledge transfer led to smooth transitions"]
+      },
+      {
+        "id": "comp-010",
+        "category": "competency",
+        "question": "What frameworks and methodologies do you draw on in your work, and how do you decide which to apply?",
+        "why_asked": "Tests breadth of knowledge and pragmatism.",
+        "framework": ["List the key frameworks you are familiar with (TOGAF, ArchiMate, BABOK, BPMN, UML, Agile, Lean, Six Sigma)", "Explain how you decide which framework to apply in a given situation", "Discuss how you adapt frameworks to the organisation's maturity and culture", "Give examples of combining elements from different frameworks", "Explain your view on framework certification vs practical application"],
+        "tips": ["Show breadth but also depth in at least two or three frameworks", "Demonstrate pragmatism; frameworks are tools, not religions", "Mention how you tailor approaches to the client's context and maturity", "Reference specific certifications you hold if relevant (TOGAF, BCS, IIBA, Agile)"]
+      },
+      {
+        "id": "scen-001",
+        "category": "scenario",
+        "question": "You are brought into an organisation that has just announced a major digital transformation. The business architecture function does not yet exist. How would you approach establishing it?",
+        "why_asked": "Tests strategic thinking, ability to build from scratch, and understanding of how business architecture fits within an organisation.",
+        "framework": ["Assess the current state: understand the organisation's maturity, existing frameworks, and key stakeholders", "Define the value proposition: articulate why business architecture matters for this transformation", "Establish foundations: start with key artefacts (capability model, value streams, information map, organisational map)", "Create governance: define how business architecture will feed into decision-making and investment", "Build relationships: identify key sponsors and stakeholders across the business", "Deliver quick wins: find an area where business architecture can demonstrate immediate value", "Iterate and expand: grow the practice incrementally based on demand and demonstrated value"],
+        "tips": ["Show awareness of common enterprise architecture frameworks (TOGAF, ArchiMate) but emphasise pragmatism", "Emphasise starting small and proving value rather than trying to boil the ocean", "Demonstrate understanding of how BA connects to IT architecture and programme delivery", "Mention the importance of executive sponsorship for establishing a new function"]
+      },
+      {
+        "id": "scen-002",
+        "category": "scenario",
+        "question": "A business unit wants to procure a new SaaS solution that overlaps with an existing enterprise platform. They are keen to move fast. How would you handle this?",
+        "why_asked": "Tests your ability to balance business urgency with architectural integrity.",
+        "framework": ["Understand the business unit's needs: why do they want this? What gap does it fill? What is the urgency?", "Assess the existing platform: can it meet the need? What would it take to extend it?", "Evaluate the overlap: map capabilities, data, integrations, and total cost of ownership", "Consider the risks: data duplication, integration complexity, vendor management, security", "Present options: extend existing platform, adopt the SaaS solution with integration, or hybrid approach", "Facilitate a decision: bring stakeholders together with clear analysis to make an informed choice", "Document the decision and rationale for future reference"],
+        "tips": ["Show that you listen to the business need first, not just enforce rules", "Demonstrate understanding of total cost of ownership beyond just licence fees", "Mention the importance of data architecture and integration considerations", "Show pragmatism; sometimes the SaaS solution is genuinely the right answer"]
+      },
+      {
+        "id": "scen-003",
+        "category": "scenario",
+        "question": "You discover that multiple teams across the organisation are working on similar initiatives without awareness of each other. What do you do?",
+        "why_asked": "Tests your ability to identify duplication, facilitate collaboration, and add strategic value.",
+        "framework": ["Map the initiatives: understand what each team is doing, their objectives, timelines, and sponsors", "Identify overlaps and synergies: where are the duplications? Where could teams benefit from sharing?", "Assess the risks: wasted investment, conflicting solutions, data inconsistency, stakeholder confusion", "Engage the sponsors: present your findings to the relevant decision-makers", "Propose options: merge initiatives, create shared components, establish coordination, or accept managed duplication", "Facilitate alignment: run workshops or steering groups to bring teams together", "Establish ongoing visibility: recommend portfolio-level governance to prevent future duplication"],
+        "tips": ["Approach this diplomatically; no one likes being told they are duplicating effort", "Focus on the opportunity (shared investment, faster delivery) rather than the problem", "Use capability models and value stream maps to make the overlap visible", "Recommend proportionate governance; not everything needs a heavy process"]
+      },
+      {
+        "id": "scen-004",
+        "category": "scenario",
+        "question": "A senior stakeholder has defined a solution before you have had a chance to properly understand the problem. How do you handle this?",
+        "why_asked": "Tests your ability to push back constructively and ensure proper analysis is done.",
+        "framework": ["Acknowledge their thinking: show respect for their input and experience", "Ask curious questions: explore why they have landed on this solution; what problem are they trying to solve?", "Propose a brief analysis phase: suggest a short, timeboxed exercise to validate the problem and explore options", "Use evidence: gather data, user feedback, or benchmarks that may reveal additional factors", "Present findings: show the problem space and a range of options, including their original solution", "Support the decision: let the stakeholder make an informed choice based on evidence"],
+        "tips": ["Never dismiss their solution outright; treat it as one valid option among several", "Frame your pushback as 'building on their thinking' rather than 'challenging' them", "Keep the analysis brief and proportionate; you are not trying to delay delivery", "Sometimes their solution is actually the right one, and that is fine too"]
+      },
+      {
+        "id": "scen-005",
+        "category": "scenario",
+        "question": "You are asked to create a target operating model for a newly merged business unit. Where do you start?",
+        "why_asked": "Tests your understanding of operating model design, a key Business Architecture skill.",
+        "framework": ["Understand the strategic intent: why the merger? What is the desired outcome? What are the constraints?", "Map the current state of both units: capabilities, processes, people, technology, data, locations", "Identify design principles: what matters most? (cost efficiency, customer experience, speed, innovation)", "Design the target operating model: organisation structure, key capabilities, process architecture, technology landscape, governance", "Assess gaps and overlaps: where are the synergies? Where are the conflicts?", "Define the transition approach: what changes first? What are the dependencies? How do you manage people through the change?", "Create a roadmap: sequence the changes with clear milestones and decision points"],
+        "tips": ["Start with the 'why' before jumping into the 'what'", "Use visual models to make the operating model tangible (capability maps, org charts, process maps)", "Pay attention to culture and people; operating models fail when they ignore the human dimension", "Show awareness of common operating model frameworks (Deloitte, McKinsey, Ashridge)"]
+      },
+      {
+        "id": "scen-006",
+        "category": "scenario",
+        "question": "The programme you are working on is running significantly over budget and behind schedule. The sponsor asks you to assess what has gone wrong and recommend next steps. What do you do?",
+        "why_asked": "Tests your diagnostic skills, objectivity, and ability to deliver honest assessments.",
+        "framework": ["Review the original business case: what was planned, what assumptions were made, what has changed?", "Gather evidence: talk to key people, review status reports, examine delivery metrics, understand dependencies", "Identify root causes: poor estimation, scope creep, unclear requirements, resource issues, governance failures, external factors?", "Assess the current position: what has been delivered? What is the remaining scope? What are the options?", "Present options: continue as-is with changes, descope and reprioritise, pause and reset, or stop", "Recommend a path forward with clear rationale, risks, and trade-offs", "Suggest improvements to prevent recurrence"],
+        "tips": ["Be objective and evidence-based; avoid blame", "Present options, not just problems", "Show understanding of sunk cost fallacy (money already spent should not drive future decisions)", "Recommend proportionate action based on the scale of the issues"]
+      },
+      {
+        "id": "scen-007",
+        "category": "scenario",
+        "question": "You need to define the requirements for a system that will be used by over 500 people across multiple business areas. How do you approach this at scale?",
+        "why_asked": "Tests your ability to manage requirements at scale, balancing thoroughness with practicality.",
+        "framework": ["Segment the stakeholder groups: identify distinct user groups with different needs", "Use a representative model: work with key representatives from each group, not all 500 people", "Layer the requirements: start with enterprise-level needs, then drill into group-specific needs", "Use multiple techniques: surveys for broad input, workshops for depth, interviews for detail", "Create a shared model: use a common format and language that all groups can understand", "Validate iteratively: review requirements with each group to catch gaps and conflicts", "Manage conflicts through governance: use a prioritisation framework and decision-making structure"],
+        "tips": ["Show that you can scale your approach, not just do what you do for small projects but bigger", "Mention specific techniques for large groups (surveys, town halls, representative workshops)", "Demonstrate awareness of requirements management tools (Jira, Confluence, DOORS)", "Highlight the importance of a shared requirements model and common vocabulary"]
+      },
+      {
+        "id": "scen-008",
+        "category": "scenario",
+        "question": "An organisation is struggling with 'shadow IT' where business units are buying their own technology without involving IT. As a Business Architect, how would you address this?",
+        "why_asked": "Tests your ability to address a systemic problem with a balanced approach.",
+        "framework": ["Understand why shadow IT is happening: slow IT procurement? Unmet needs? Lack of awareness?", "Map the current landscape: what shadow IT exists? What risks does it create?", "Assess the impact: security risks, data silos, compliance issues, wasted spend, integration gaps", "Address root causes: improve IT responsiveness, create faster procurement paths, involve business in IT decisions", "Establish proportionate governance: create a simple approval process that is fast for low-risk decisions", "Create visibility: maintain an application portfolio that includes all business-procured tools", "Build bridges: foster collaboration between IT and business units"],
+        "tips": ["Avoid a purely policing approach; understand that shadow IT often exists because of genuine business frustration", "Show empathy for both sides (business needs speed, IT needs control)", "Propose practical solutions that balance agility with governance", "Reference application portfolio management as a tool for visibility"]
+      },
+      {
+        "id": "scen-009",
+        "category": "scenario",
+        "question": "You are asked to assess whether an organisation should build a custom solution or buy a commercial off-the-shelf (COTS) product. How do you approach this decision?",
+        "why_asked": "Build vs buy is a classic BA and architecture question.",
+        "framework": ["Define the requirements clearly: what must the solution do? What are the must-haves vs nice-to-haves?", "Assess the market: what COTS products exist? How well do they fit the requirements?", "Evaluate fit: score each option against requirements (functional fit, technical fit, scalability)", "Consider total cost of ownership: licence fees, implementation, customisation, maintenance, integration, training", "Assess risk: vendor lock-in, customisation complexity, internal capability to build and maintain", "Evaluate strategic fit: does the capability differentiate the business? (If yes, consider build; if commodity, consider buy)", "Present a recommendation with clear rationale and assumptions"],
+        "tips": ["Use a structured evaluation framework (weighted scoring matrix)", "Consider whether the capability is a differentiator or a commodity (Wardley mapping concepts)", "Include total cost of ownership over 5+ years, not just upfront costs", "Mention the hidden costs of customising COTS products beyond their design intent"]
+      },
+      {
+        "id": "scen-010",
+        "category": "scenario",
+        "question": "You join a programme mid-flight as a contractor. The team is demoralised, requirements are unclear, and the business sponsor is losing confidence. What do you do in your first two weeks?",
+        "why_asked": "Tests your ability to make an immediate impact in a challenging situation. Very realistic for contractors.",
+        "framework": ["Listen first: spend the first few days understanding the situation from multiple perspectives (team, sponsor, stakeholders)", "Identify the most pressing issues: what is causing the most pain right now?", "Build trust quickly: be visible, approachable, and deliver small, useful things early", "Stabilise requirements: create a clear, shared view of what is in scope and what is not", "Improve communication: set up regular, transparent reporting to the sponsor", "Address team morale: acknowledge the challenges, celebrate small wins, remove blockers", "Create a short-term plan: propose a 30/60/90 day plan with realistic, achievable milestones"],
+        "tips": ["Show that you lead with listening, not telling", "Demonstrate emotional intelligence and awareness of team dynamics", "Focus on quick wins that build confidence and momentum", "Be honest with the sponsor about the situation while showing a path forward"]
+      }
+    ];
+
+    // === Render Questions ===
+    const questionList = document.getElementById("questionList");
+
+    function renderQuestions(category) {
+      const filtered = category === "all"
+        ? questions
+        : questions.filter(q => q.category === category);
+
+      questionList.innerHTML = "";
+
+      filtered.forEach(q => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.onclick = () => {
+          const detail = card.querySelector(".question-detail");
+          detail.classList.toggle("open");
+        };
+
+        const categoryLabel = q.category === "behavioural" ? "Behavioural (STAR)"
+          : q.category === "competency" ? "Competency"
+          : "Scenario";
+
+        card.innerHTML = `
+          <div class="card-header">
+            <div class="question-text">${q.question}</div>
+            <span class="category-badge ${q.category}">${categoryLabel}</span>
+          </div>
+          <div class="why-asked">${q.why_asked}</div>
+          <div class="question-detail">
+            <div class="detail-section">
+              <h3>Answer Framework</h3>
+              <ol>
+                ${q.framework.map(f => `<li>${f}</li>`).join("")}
+              </ol>
+            </div>
+            <div class="detail-section">
+              <h3>Tips</h3>
+              <ul style="list-style: none; padding-left: 0;">
+                ${q.tips.map(t => `<li class="tip-item">${t}</li>`).join("")}
+              </ul>
+            </div>
+          </div>
+        `;
+
+        questionList.appendChild(card);
+      });
+    }
+
+    // === Filter Buttons ===
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderQuestions(btn.dataset.category);
+      });
+    });
+
+    // Initial render
+    renderQuestions("all");
+  </script>
+
+</body>
+</html>
