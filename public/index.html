@@ -1348,6 +1348,581 @@
     .app-hidden header,
     .app-hidden main,
     .app-hidden footer { display: none; }
+
+    /* === Page Navigation Tabs === */
+    .page-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+
+    .page-tab {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--color-bg);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .page-tab + .page-tab {
+      border-left: 1px solid var(--color-border);
+    }
+
+    .page-tab:hover {
+      background: var(--color-bg-alt);
+    }
+
+    .page-tab.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .page-tab-count {
+      font-size: 0.75rem;
+      padding: 1px 7px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .page-tab.active .page-tab-count {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .page-tab:not(.active) .page-tab-count {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    /* === Recruiter Status Colours === */
+    :root {
+      --rec-status-reached: #1565c0;
+      --rec-status-reached-bg: #e3f2fd;
+      --rec-status-active: #2e7d32;
+      --rec-status-active-bg: #e8f5e9;
+      --rec-status-quiet: #ef6c00;
+      --rec-status-quiet-bg: #fff3e0;
+      --rec-status-not-useful: #616161;
+      --rec-status-not-useful-bg: #f5f5f5;
+
+      --role-mentioned: #616161;
+      --role-mentioned-bg: #f5f5f5;
+      --role-cv: #1565c0;
+      --role-cv-bg: #e3f2fd;
+      --role-interview: #6a1b9a;
+      --role-interview-bg: #f3e5f5;
+      --role-rejected: #c62828;
+      --role-rejected-bg: #ffebee;
+      --role-withdrawn: #616161;
+      --role-withdrawn-bg: #f5f5f5;
+    }
+
+    /* === Recruiters Panel === */
+    .recruiters-panel {
+      display: none;
+    }
+
+    .recruiters-panel.visible {
+      display: block;
+    }
+
+    /* === Add Recruiter Form === */
+    .rec-form {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .rec-form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rec-form-row input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      background: var(--color-bg);
+      color: var(--color-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .rec-form-row input[type="text"]:focus {
+      border-color: var(--color-primary);
+    }
+
+    .rec-form-row input[type="text"]::placeholder {
+      color: #aaa;
+    }
+
+    .rec-form-options {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .rec-form-options .form-group {
+      margin-bottom: 0;
+    }
+
+    .rec-form-options input,
+    .rec-form-options select {
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-family: var(--font);
+      color: var(--color-text);
+      background: var(--color-bg);
+      outline: none;
+    }
+
+    .rec-form-options input:focus,
+    .rec-form-options select:focus {
+      border-color: var(--color-primary);
+    }
+
+    .rec-form-options label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* === Recruiter Cards === */
+    .rec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .rec-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .rec-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .rec-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+
+    .rec-summary:hover {
+      background: var(--color-bg-alt);
+    }
+
+    .rec-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .rec-company {
+      font-size: 1rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .rec-contact-name {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+
+    .rec-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .rec-date {
+      font-size: 0.78rem;
+      color: var(--color-text-secondary);
+    }
+
+    /* === Recruiter Status Badges === */
+    .rec-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .rec-badge-reached-out { background: var(--rec-status-reached-bg); color: var(--rec-status-reached); }
+    .rec-badge-active { background: var(--rec-status-active-bg); color: var(--rec-status-active); }
+    .rec-badge-quiet { background: var(--rec-status-quiet-bg); color: var(--rec-status-quiet); }
+    .rec-badge-not-useful { background: var(--rec-status-not-useful-bg); color: var(--rec-status-not-useful); }
+
+    /* === Role Status Badges === */
+    .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .role-badge-mentioned { background: var(--role-mentioned-bg); color: var(--role-mentioned); }
+    .role-badge-cv-submitted { background: var(--role-cv-bg); color: var(--role-cv); }
+    .role-badge-interview { background: var(--role-interview-bg); color: var(--role-interview); }
+    .role-badge-rejected { background: var(--role-rejected-bg); color: var(--role-rejected); }
+    .role-badge-withdrawn { background: var(--role-withdrawn-bg); color: var(--role-withdrawn); }
+
+    /* === Priority & Follow-up Flags === */
+    .rec-flag {
+      cursor: pointer;
+      font-size: 1rem;
+      color: #ccc;
+      transition: color 0.2s, transform 0.15s;
+      user-select: none;
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .rec-flag:hover {
+      transform: scale(1.2);
+    }
+
+    .rec-flag.flag-active {
+      color: #f5a623;
+    }
+
+    .rec-flag-followup.flag-active {
+      color: var(--color-primary);
+    }
+
+    /* === Recruiter Detail (Expanded) === */
+    .rec-detail {
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .rec-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 16px 0;
+    }
+
+    .rec-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .rec-field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .rec-field label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
+    .rec-field input,
+    .rec-field select,
+    .rec-field textarea {
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-family: var(--font);
+      color: var(--color-text);
+      background: var(--color-bg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .rec-field input:focus,
+    .rec-field select:focus,
+    .rec-field textarea:focus {
+      border-color: var(--color-primary);
+    }
+
+    .rec-field input::placeholder,
+    .rec-field textarea::placeholder {
+      color: #aaa;
+    }
+
+    .rec-field textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    /* === Roles Section (inside expanded card) === */
+    .rec-roles-section {
+      border-top: 1px solid var(--color-border);
+      padding-top: 16px;
+      margin-top: 4px;
+    }
+
+    .rec-roles-header {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rec-roles-count {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .rec-roles-empty {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      padding: 8px 0;
+      font-style: italic;
+    }
+
+    .rec-role-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--color-bg-alt);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      gap: 10px;
+      font-size: 0.88rem;
+    }
+
+    .rec-role-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .rec-role-title {
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .rec-role-company {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+
+    .rec-role-date {
+      font-size: 0.78rem;
+      color: var(--color-text-secondary);
+    }
+
+    .rec-role-comment {
+      font-size: 0.78rem;
+      color: var(--color-text-secondary);
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .rec-role-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .rec-role-delete {
+      background: none;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .rec-role-delete:hover {
+      color: var(--status-rejected);
+    }
+
+    /* === Add Role Form === */
+    .rec-role-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .rec-role-form input,
+    .rec-role-form select {
+      padding: 7px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-family: var(--font);
+      color: var(--color-text);
+      background: var(--color-bg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .rec-role-form input:focus,
+    .rec-role-form select:focus {
+      border-color: var(--color-primary);
+    }
+
+    .rec-role-form input::placeholder {
+      color: #aaa;
+    }
+
+    .rec-role-form input[type="text"] {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn-add-role {
+      padding: 7px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .btn-add-role:hover {
+      background: var(--color-primary-hover);
+    }
+
+    /* === Recruiter Actions & Footer === */
+    .rec-actions {
+      padding-top: 12px;
+      border-top: 1px solid var(--color-border);
+      margin-top: 16px;
+      text-align: right;
+    }
+
+    .btn-delete-rec {
+      padding: 6px 14px;
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-delete-rec:hover {
+      border-color: var(--status-rejected);
+      color: var(--status-rejected);
+    }
+
+    .rec-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+
+    .rec-empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--color-text-secondary);
+    }
+
+    .rec-empty-state p {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .rec-empty-state .empty-hint {
+      font-size: 0.88rem;
+    }
+
+    /* === Recruiter Responsive === */
+    @media (max-width: 640px) {
+      .rec-form-options {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .rec-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .rec-detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .rec-role-form {
+        flex-direction: column;
+      }
+
+      .rec-role-form input[type="text"] {
+        min-width: auto;
+      }
+
+      .rec-role-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .rec-role-meta {
+        flex-wrap: wrap;
+      }
+
+      .page-tab {
+        font-size: 0.82rem;
+        padding: 10px 12px;
+      }
+    }
   </style>
 </head>
 <body class="app-hidden">
@@ -1381,6 +1956,18 @@
 
   <!-- Main Content -->
   <main>
+    <!-- Page Tabs: Jobs vs Recruiters -->
+    <nav class="page-tabs" id="pageTabs">
+      <button class="page-tab active" data-page="jobs">
+        Jobs <span class="page-tab-count" id="jobsTabCount">0</span>
+      </button>
+      <button class="page-tab" data-page="recruiters">
+        Recruiters <span class="page-tab-count" id="recruitersTabCount">0</span>
+      </button>
+    </nav>
+
+    <!-- === JOBS VIEW (shown by default) === -->
+    <div id="jobsView">
     <!-- Stats Dashboard -->
     <section class="stats-bar" id="statsBar"></section>
 
@@ -1434,6 +2021,43 @@
       </div>
       <div class="feed-cards" id="feedCards"></div>
     </section>
+    </div><!-- end jobsView -->
+
+    <!-- === RECRUITERS VIEW (hidden by default) === -->
+    <div class="recruiters-panel" id="recruitersPanel">
+      <!-- Add Recruiter Form -->
+      <div class="rec-form">
+        <form id="recAddForm">
+          <div class="rec-form-row">
+            <input type="text" id="recCompanyInput" placeholder="Company or agency name..." autocomplete="off" required>
+            <button type="submit" class="btn-add" style="padding:10px 20px">Add</button>
+          </div>
+          <div class="rec-form-options">
+            <div class="form-group">
+              <label for="recContactInput">Contact Name</label>
+              <input type="text" id="recContactInput" placeholder="e.g. John Smith" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="recStatusInput">Status</label>
+              <select id="recStatusInput">
+                <option value="reached-out">Reached Out</option>
+                <option value="active">In Active Contact</option>
+                <option value="quiet">Gone Quiet</option>
+                <option value="not-useful">Not Useful</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Recruiter Cards List -->
+      <div class="rec-list" id="recList"></div>
+
+      <!-- Footer -->
+      <div class="rec-footer" id="recFooter">
+        <span id="recCount">0 recruiters</span>
+      </div>
+    </div><!-- end recruitersPanel -->
 
   </main>
 
@@ -1660,6 +2284,7 @@
     function initApp() {
       initJobs();
       loadFeed();
+      initRecruiters();
     }
 
     /* === Constants === */
@@ -1944,6 +2569,7 @@
       });
       cardsContainer.innerHTML = html;
       renderStats();
+      updateTabCounts();
     }
 
     /* === Stats Dashboard === */
@@ -2520,6 +3146,426 @@
       }
     }
 
+    /* ================================================================
+       RECRUITERS SECTION
+       ================================================================ */
+
+    /* === Recruiter Constants === */
+    const REC_STORAGE_KEY = 'jobTracker_recruiters';
+    const REC_SYNC_TS_KEY = 'jobTracker_recruitersLastModified';
+
+    const REC_STATUS_LABELS = {
+      'reached-out': 'Reached Out',
+      'active': 'In Active Contact',
+      'quiet': 'Gone Quiet',
+      'not-useful': 'Not Useful'
+    };
+
+    const REC_STATUS_BADGE_CLASS = {
+      'reached-out': 'rec-badge rec-badge-reached-out',
+      'active': 'rec-badge rec-badge-active',
+      'quiet': 'rec-badge rec-badge-quiet',
+      'not-useful': 'rec-badge rec-badge-not-useful'
+    };
+
+    const ROLE_STATUS_LABELS = {
+      'mentioned': 'Mentioned',
+      'cv-submitted': 'CV Submitted',
+      'interview': 'Interview Stage',
+      'rejected': 'Rejected',
+      'withdrawn': 'Withdrawn'
+    };
+
+    const ROLE_STATUS_BADGE_CLASS = {
+      'mentioned': 'role-badge role-badge-mentioned',
+      'cv-submitted': 'role-badge role-badge-cv-submitted',
+      'interview': 'role-badge role-badge-interview',
+      'rejected': 'role-badge role-badge-rejected',
+      'withdrawn': 'role-badge role-badge-withdrawn'
+    };
+
+    /* === Recruiter State === */
+    let recruiters = [];
+    let expandedRecruiterId = null;
+    let activePage = 'jobs';  // 'jobs' or 'recruiters'
+    let isRecSaving = false;
+
+    /* === Recruiter DOM References === */
+    const recList = document.getElementById('recList');
+    const recCount = document.getElementById('recCount');
+
+    /* === Page Tab Switching === */
+    function switchPage(page) {
+      activePage = page;
+      const jobsView = document.getElementById('jobsView');
+      const recPanel = document.getElementById('recruitersPanel');
+      const statsBar = document.getElementById('statsBar');
+      const headerButtons = document.querySelector('.header-buttons');
+
+      // Toggle visibility
+      if (page === 'jobs') {
+        jobsView.style.display = 'block';
+        recPanel.classList.remove('visible');
+        if (headerButtons) headerButtons.style.display = 'flex';
+      } else {
+        jobsView.style.display = 'none';
+        recPanel.classList.add('visible');
+        if (headerButtons) headerButtons.style.display = 'none';
+        renderRecruiters();
+      }
+
+      // Update tab active states
+      document.querySelectorAll('.page-tab').forEach(function(tab) {
+        tab.classList.toggle('active', tab.dataset.page === page);
+      });
+    }
+
+    /* Update the tab counts */
+    function updateTabCounts() {
+      var jobsTabCount = document.getElementById('jobsTabCount');
+      var recTabCount = document.getElementById('recruitersTabCount');
+      if (jobsTabCount) jobsTabCount.textContent = jobs.length;
+      if (recTabCount) recTabCount.textContent = recruiters.length;
+    }
+
+    /* === Recruiter Persistence (Upstash Redis via /api/recruiters) === */
+
+    async function saveRecruiters() {
+      // Keep a local copy for fast loading
+      localStorage.setItem(REC_STORAGE_KEY, JSON.stringify(recruiters));
+      localStorage.setItem(REC_SYNC_TS_KEY, new Date().toISOString());
+
+      // Save to database in background
+      if (isRecSaving) return;
+      isRecSaving = true;
+
+      try {
+        const response = await authFetch('/api/recruiters', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ recruiters: recruiters, lastModified: new Date().toISOString() })
+        });
+        if (!response.ok) throw new Error('Save failed');
+      } catch (err) {
+        console.error('Failed to save recruiters:', err);
+      } finally {
+        isRecSaving = false;
+      }
+    }
+
+    async function initRecruiters() {
+      // Load from localStorage first for quick display
+      const localData = localStorage.getItem(REC_STORAGE_KEY);
+      if (localData) {
+        try {
+          recruiters = JSON.parse(localData);
+        } catch (e) { /* ignore bad data */ }
+      }
+
+      // Then fetch latest from the database
+      try {
+        const response = await authFetch('/api/recruiters');
+        if (!response.ok) throw new Error('Fetch failed');
+        const data = await response.json();
+
+        if (data.recruiters && data.recruiters.length > 0) {
+          recruiters = data.recruiters;
+          localStorage.setItem(REC_STORAGE_KEY, JSON.stringify(recruiters));
+        } else if (recruiters.length > 0) {
+          // Local data exists but database is empty, push up
+          await saveRecruiters();
+        }
+      } catch (err) {
+        console.error('Could not load recruiters from database:', err);
+      }
+
+      updateTabCounts();
+      if (activePage === 'recruiters') {
+        renderRecruiters();
+      }
+    }
+
+    /* === Recruiter Sorting === */
+    // Priority flagged first, then by status (active > reached-out > quiet > not-useful), then by last contacted date
+    function sortRecruiters(list) {
+      const statusOrder = { 'active': 0, 'reached-out': 1, 'quiet': 2, 'not-useful': 3 };
+      return list.slice().sort(function(a, b) {
+        // Priority first
+        const aPri = a.priority ? 0 : 1;
+        const bPri = b.priority ? 0 : 1;
+        if (aPri !== bPri) return aPri - bPri;
+
+        // Then follow-up flagged
+        const aFu = a.followUp ? 0 : 1;
+        const bFu = b.followUp ? 0 : 1;
+        if (aFu !== bFu) return aFu - bFu;
+
+        // Then by status order
+        const aStatus = statusOrder[a.status] !== undefined ? statusOrder[a.status] : 9;
+        const bStatus = statusOrder[b.status] !== undefined ? statusOrder[b.status] : 9;
+        if (aStatus !== bStatus) return aStatus - bStatus;
+
+        // Then by most recently contacted
+        const aDate = a.lastContactedDate || a.dateReachedOut || a.createdAt || '';
+        const bDate = b.lastContactedDate || b.dateReachedOut || b.createdAt || '';
+        return bDate.localeCompare(aDate);
+      });
+    }
+
+    /* === Recruiter Rendering === */
+    function renderRecruiters() {
+      const sorted = sortRecruiters(recruiters);
+
+      // Update counts
+      recCount.textContent = recruiters.length + ' recruiter' + (recruiters.length !== 1 ? 's' : '');
+      updateTabCounts();
+
+      // Empty state
+      if (sorted.length === 0) {
+        recList.innerHTML = '<div class="rec-empty-state"><p>No recruiters tracked yet.</p><p class="empty-hint">Add a company or agency above to get started.</p></div>';
+        return;
+      }
+
+      let html = '';
+      sorted.forEach(function(rec) {
+        html += renderRecCard(rec);
+      });
+      recList.innerHTML = html;
+    }
+
+    function renderRecCard(rec) {
+      const statusLabel = REC_STATUS_LABELS[rec.status] || rec.status;
+      const statusBadge = '<span class="' + (REC_STATUS_BADGE_CLASS[rec.status] || 'rec-badge') + '">' + statusLabel + '</span>';
+
+      // Date display
+      const dateStr = rec.lastContactedDate || rec.dateReachedOut || '';
+      const dateDisplay = dateStr ? formatDate(dateStr) : '';
+
+      // Priority flag
+      const priClass = 'rec-flag' + (rec.priority ? ' flag-active' : '');
+      const priIcon = rec.priority ? '&#9733;' : '&#9734;';
+      const priBtn = '<button class="' + priClass + '" data-rec-id="' + rec.id + '" data-rec-action="priority" title="' + (rec.priority ? 'Remove priority' : 'Mark as priority') + '">' + priIcon + '</button>';
+
+      // Follow-up flag
+      const fuClass = 'rec-flag rec-flag-followup' + (rec.followUp ? ' flag-active' : '');
+      const fuIcon = rec.followUp ? '&#128276;' : '&#128277;';
+      const fuBtn = '<button class="' + fuClass + '" data-rec-id="' + rec.id + '" data-rec-action="followup" title="' + (rec.followUp ? 'Clear follow-up' : 'Flag for follow-up') + '">' + fuIcon + '</button>';
+
+      const isExpanded = expandedRecruiterId === rec.id;
+
+      let detailHtml = '';
+      if (isExpanded) {
+        detailHtml = renderRecDetail(rec);
+      }
+
+      return '<div class="rec-card" data-rec-id="' + rec.id + '">' +
+        '<div class="rec-summary" data-rec-id="' + rec.id + '" data-rec-action="toggle">' +
+          '<div class="rec-info">' +
+            '<div class="rec-company">' + escapeHtml(rec.company) + '</div>' +
+            (rec.contact ? '<div class="rec-contact-name">' + escapeHtml(rec.contact) + '</div>' : '') +
+          '</div>' +
+          '<div class="rec-meta">' +
+            (dateDisplay ? '<span class="rec-date">' + dateDisplay + '</span>' : '') +
+            statusBadge +
+            priBtn +
+            fuBtn +
+          '</div>' +
+        '</div>' +
+        detailHtml +
+      '</div>';
+    }
+
+    function renderRecDetail(rec) {
+      // Build the roles list
+      const roles = rec.roles || [];
+      let rolesHtml = '';
+
+      if (roles.length === 0) {
+        rolesHtml = '<div class="rec-roles-empty">No roles listed yet.</div>';
+      } else {
+        roles.forEach(function(role) {
+          const roleStatusLabel = ROLE_STATUS_LABELS[role.status] || role.status;
+          const roleBadge = '<span class="' + (ROLE_STATUS_BADGE_CLASS[role.status] || 'role-badge') + '">' + roleStatusLabel + '</span>';
+          const roleDateStr = role.dateMentioned ? formatDate(role.dateMentioned) : '';
+
+          rolesHtml += '<div class="rec-role-item">' +
+            '<div class="rec-role-info">' +
+              '<div class="rec-role-title">' + escapeHtml(role.title) + '</div>' +
+              (role.company ? '<div class="rec-role-company">' + escapeHtml(role.company) + '</div>' : '') +
+              (roleDateStr ? '<div class="rec-role-date">' + roleDateStr + '</div>' : '') +
+              (role.comment ? '<div class="rec-role-comment">' + escapeHtml(role.comment) + '</div>' : '') +
+            '</div>' +
+            '<div class="rec-role-meta">' +
+              roleBadge +
+              '<button class="rec-role-delete" data-rec-id="' + rec.id + '" data-role-id="' + role.id + '" data-rec-action="delete-role" title="Remove role">&times;</button>' +
+            '</div>' +
+          '</div>';
+        });
+      }
+
+      return '<div class="rec-detail">' +
+        '<div class="rec-detail-grid">' +
+          '<div class="rec-field">' +
+            '<label>Phone</label>' +
+            '<input type="text" value="' + escapeHtml(rec.phone || '') + '" data-rec-id="' + rec.id + '" data-rec-field="phone" placeholder="Phone number">' +
+          '</div>' +
+          '<div class="rec-field">' +
+            '<label>Email</label>' +
+            '<input type="email" value="' + escapeHtml(rec.email || '') + '" data-rec-id="' + rec.id + '" data-rec-field="email" placeholder="Email address">' +
+          '</div>' +
+          '<div class="rec-field">' +
+            '<label>Specialism</label>' +
+            '<input type="text" value="' + escapeHtml(rec.specialism || '') + '" data-rec-id="' + rec.id + '" data-rec-field="specialism" placeholder="e.g. Business Architecture, IT Contracting">' +
+          '</div>' +
+          '<div class="rec-field">' +
+            '<label>Status</label>' +
+            '<select data-rec-id="' + rec.id + '" data-rec-field="status">' +
+              '<option value="reached-out"' + (rec.status === 'reached-out' ? ' selected' : '') + '>Reached Out</option>' +
+              '<option value="active"' + (rec.status === 'active' ? ' selected' : '') + '>In Active Contact</option>' +
+              '<option value="quiet"' + (rec.status === 'quiet' ? ' selected' : '') + '>Gone Quiet</option>' +
+              '<option value="not-useful"' + (rec.status === 'not-useful' ? ' selected' : '') + '>Not Useful</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="rec-field">' +
+            '<label>Date First Reached Out</label>' +
+            '<input type="date" value="' + (rec.dateReachedOut || '') + '" data-rec-id="' + rec.id + '" data-rec-field="dateReachedOut">' +
+          '</div>' +
+          '<div class="rec-field">' +
+            '<label>Last Contacted</label>' +
+            '<input type="date" value="' + (rec.lastContactedDate || '') + '" data-rec-id="' + rec.id + '" data-rec-field="lastContactedDate">' +
+          '</div>' +
+          '<div class="rec-field">' +
+            '<label>Contact Name</label>' +
+            '<input type="text" value="' + escapeHtml(rec.contact || '') + '" data-rec-id="' + rec.id + '" data-rec-field="contact" placeholder="Contact name">' +
+          '</div>' +
+          '<div class="rec-field full-width">' +
+            '<label>Notes</label>' +
+            '<textarea data-rec-id="' + rec.id + '" data-rec-field="notes" placeholder="Any notes about this recruiter...">' + escapeHtml(rec.notes || '') + '</textarea>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rec-roles-section">' +
+          '<div class="rec-roles-header">Roles <span class="rec-roles-count">' + roles.length + '</span></div>' +
+          rolesHtml +
+          '<form class="rec-role-form" data-rec-id="' + rec.id + '" data-rec-action="add-role">' +
+            '<input type="text" placeholder="Role title" required>' +
+            '<input type="text" placeholder="Company">' +
+            '<select>' +
+              '<option value="mentioned">Mentioned</option>' +
+              '<option value="cv-submitted">CV Submitted</option>' +
+              '<option value="interview">Interview Stage</option>' +
+              '<option value="rejected">Rejected</option>' +
+              '<option value="withdrawn">Withdrawn</option>' +
+            '</select>' +
+            '<input type="text" placeholder="Comment (optional)">' +
+            '<button type="submit" class="btn-add-role">+ Add</button>' +
+          '</form>' +
+        '</div>' +
+        '<div class="rec-actions">' +
+          '<button class="btn-delete-rec" data-rec-id="' + rec.id + '" data-rec-action="delete">Remove Recruiter</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    /* === Recruiter CRUD === */
+    function addRecruiter(data) {
+      const now = new Date().toISOString();
+      const today = new Date().toISOString().split('T')[0];
+      const rec = {
+        id: 'rec-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
+        company: data.company,
+        contact: data.contact || '',
+        phone: '',
+        email: '',
+        specialism: '',
+        status: data.status || 'reached-out',
+        dateReachedOut: today,
+        lastContactedDate: today,
+        priority: false,
+        followUp: false,
+        notes: '',
+        roles: [],
+        createdAt: now,
+        updatedAt: now
+      };
+      recruiters.push(rec);
+      saveRecruiters();
+      renderRecruiters();
+    }
+
+    // Update a single field on a recruiter without re-rendering (preserves focus)
+    function updateRecField(recId, field, value) {
+      const idx = recruiters.findIndex(function(r) { return r.id === recId; });
+      if (idx === -1) return;
+      recruiters[idx][field] = value;
+      recruiters[idx].updatedAt = new Date().toISOString();
+      saveRecruiters();
+      // Only update tab counts, don't re-render (would lose focus)
+      updateTabCounts();
+    }
+
+    function deleteRecruiter(recId) {
+      recruiters = recruiters.filter(function(r) { return r.id !== recId; });
+      if (expandedRecruiterId === recId) expandedRecruiterId = null;
+      saveRecruiters();
+      renderRecruiters();
+    }
+
+    function toggleRecPriority(recId) {
+      const idx = recruiters.findIndex(function(r) { return r.id === recId; });
+      if (idx === -1) return;
+      recruiters[idx].priority = !recruiters[idx].priority;
+      recruiters[idx].updatedAt = new Date().toISOString();
+      saveRecruiters();
+      renderRecruiters();
+    }
+
+    function toggleRecFollowUp(recId) {
+      const idx = recruiters.findIndex(function(r) { return r.id === recId; });
+      if (idx === -1) return;
+      recruiters[idx].followUp = !recruiters[idx].followUp;
+      recruiters[idx].updatedAt = new Date().toISOString();
+      saveRecruiters();
+      renderRecruiters();
+    }
+
+    function toggleRecExpand(recId) {
+      if (expandedRecruiterId === recId) {
+        expandedRecruiterId = null;
+      } else {
+        expandedRecruiterId = recId;
+      }
+      renderRecruiters();
+    }
+
+    /* === Role CRUD (nested under recruiters) === */
+    function addRole(recId, roleData) {
+      const idx = recruiters.findIndex(function(r) { return r.id === recId; });
+      if (idx === -1) return;
+
+      const role = {
+        id: 'role-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
+        title: roleData.title,
+        company: roleData.company || '',
+        status: roleData.status || 'mentioned',
+        dateMentioned: new Date().toISOString().split('T')[0],
+        comment: roleData.comment || ''
+      };
+      recruiters[idx].roles = recruiters[idx].roles || [];
+      recruiters[idx].roles.push(role);
+      recruiters[idx].updatedAt = new Date().toISOString();
+      saveRecruiters();
+      renderRecruiters();
+    }
+
+    function deleteRole(recId, roleId) {
+      const idx = recruiters.findIndex(function(r) { return r.id === recId; });
+      if (idx === -1) return;
+      recruiters[idx].roles = (recruiters[idx].roles || []).filter(function(r) { return r.id !== roleId; });
+      recruiters[idx].updatedAt = new Date().toISOString();
+      saveRecruiters();
+      renderRecruiters();
+    }
+
     /* === Event Listeners === */
     document.addEventListener('DOMContentLoaded', function() {
       // Check authentication first; initApp() runs after successful auth
@@ -2679,6 +3725,114 @@
           }
         }
       });
+
+      /* === Recruiter Event Listeners === */
+
+      // Page tab switching (Jobs vs Recruiters)
+      document.getElementById('pageTabs').addEventListener('click', function(e) {
+        var tab = e.target.closest('.page-tab');
+        if (!tab) return;
+        switchPage(tab.dataset.page);
+      });
+
+      // Add recruiter form
+      document.getElementById('recAddForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var company = document.getElementById('recCompanyInput').value.trim();
+        if (!company) return;
+        var contact = document.getElementById('recContactInput').value.trim();
+        var status = document.getElementById('recStatusInput').value;
+        addRecruiter({ company: company, contact: contact, status: status });
+        document.getElementById('recAddForm').reset();
+      });
+
+      // Recruiter list event delegation (clicks on cards, flags, buttons)
+      recList.addEventListener('click', function(e) {
+        var target = e.target.closest('[data-rec-action]');
+        if (!target) return;
+
+        var action = target.dataset.recAction;
+        var recId = target.dataset.recId;
+
+        // Priority and follow-up flags should not trigger expand/collapse
+        if (action === 'priority') {
+          e.stopPropagation();
+          toggleRecPriority(recId);
+          return;
+        }
+
+        if (action === 'followup') {
+          e.stopPropagation();
+          toggleRecFollowUp(recId);
+          return;
+        }
+
+        if (action === 'toggle') {
+          toggleRecExpand(recId);
+          return;
+        }
+
+        if (action === 'delete') {
+          if (confirm('Remove this recruiter and all their roles?')) {
+            deleteRecruiter(recId);
+          }
+          return;
+        }
+
+        if (action === 'delete-role') {
+          var roleId = target.dataset.roleId;
+          deleteRole(recId, roleId);
+          return;
+        }
+      });
+
+      // Add role form submission (delegated because forms are inside dynamically rendered cards)
+      recList.addEventListener('submit', function(e) {
+        var form = e.target.closest('[data-rec-action="add-role"]');
+        if (!form) return;
+        e.preventDefault();
+
+        var recId = form.dataset.recId;
+        var inputs = form.querySelectorAll('input, select');
+        var title = inputs[0].value.trim();
+        if (!title) return;
+
+        var company = inputs[1].value.trim();
+        var status = inputs[2].value;
+        var comment = inputs[3].value.trim();
+
+        addRole(recId, { title: title, company: company, status: status, comment: comment });
+      });
+
+      // Auto-save recruiter fields on blur (change event for selects, blur for text inputs)
+      recList.addEventListener('change', function(e) {
+        var el = e.target.closest('[data-rec-field]');
+        if (!el) return;
+        var recId = el.dataset.recId;
+        var field = el.dataset.recField;
+        var value = el.value;
+
+        updateRecField(recId, field, value);
+
+        // If status changed, we need to re-render to update the badge on the summary row
+        if (field === 'status') {
+          renderRecruiters();
+        }
+      });
+
+      // Also auto-save text inputs and textareas on blur
+      recList.addEventListener('blur', function(e) {
+        var el = e.target.closest('[data-rec-field]');
+        if (!el) return;
+        // Skip selects (already handled by change)
+        if (el.tagName === 'SELECT') return;
+        var recId = el.dataset.recId;
+        var field = el.dataset.recField;
+        var value = el.value;
+
+        updateRecField(recId, field, value);
+      }, true); // use capture so blur fires for all descendants
+
     });
   </script>
 </body>
