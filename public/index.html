@@ -1407,6 +1407,8 @@
 
     /* === Recruiter Status Colours === */
     :root {
+      --rec-status-not-contacted: #7b1fa2;
+      --rec-status-not-contacted-bg: #f3e5f5;
       --rec-status-reached: #1565c0;
       --rec-status-reached-bg: #e3f2fd;
       --rec-status-active: #2e7d32;
@@ -1583,6 +1585,7 @@
       white-space: nowrap;
     }
 
+    .rec-badge-not-contacted { background: var(--rec-status-not-contacted-bg); color: var(--rec-status-not-contacted); }
     .rec-badge-reached-out { background: var(--rec-status-reached-bg); color: var(--rec-status-reached); }
     .rec-badge-active { background: var(--rec-status-active-bg); color: var(--rec-status-active); }
     .rec-badge-quiet { background: var(--rec-status-quiet-bg); color: var(--rec-status-quiet); }
@@ -2040,6 +2043,7 @@
             <div class="form-group">
               <label for="recStatusInput">Status</label>
               <select id="recStatusInput">
+                <option value="not-contacted">Not Yet Contacted</option>
                 <option value="reached-out">Reached Out</option>
                 <option value="active">In Active Contact</option>
                 <option value="quiet">Gone Quiet</option>
@@ -3155,6 +3159,7 @@
     const REC_SYNC_TS_KEY = 'jobTracker_recruitersLastModified';
 
     const REC_STATUS_LABELS = {
+      'not-contacted': 'Not Yet Contacted',
       'reached-out': 'Reached Out',
       'active': 'In Active Contact',
       'quiet': 'Gone Quiet',
@@ -3162,6 +3167,7 @@
     };
 
     const REC_STATUS_BADGE_CLASS = {
+      'not-contacted': 'rec-badge rec-badge-not-contacted',
       'reached-out': 'rec-badge rec-badge-reached-out',
       'active': 'rec-badge rec-badge-active',
       'quiet': 'rec-badge rec-badge-quiet',
@@ -3420,6 +3426,7 @@
           '<div class="rec-field">' +
             '<label>Status</label>' +
             '<select data-rec-id="' + rec.id + '" data-rec-field="status">' +
+              '<option value="not-contacted"' + (rec.status === 'not-contacted' ? ' selected' : '') + '>Not Yet Contacted</option>' +
               '<option value="reached-out"' + (rec.status === 'reached-out' ? ' selected' : '') + '>Reached Out</option>' +
               '<option value="active"' + (rec.status === 'active' ? ' selected' : '') + '>In Active Contact</option>' +
               '<option value="quiet"' + (rec.status === 'quiet' ? ' selected' : '') + '>Gone Quiet</option>' +
