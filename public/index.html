@@ -33,6 +33,8 @@
       --status-offered-bg: #f3e5f5;
       --status-rejected: #c62828;
       --status-rejected-bg: #ffebee;
+      --status-no-response: #616161;
+      --status-no-response-bg: #f5f5f5;
 
       /* IR35 colours */
       --ir35-outside: #2e7d32;
@@ -315,6 +317,11 @@
       color: var(--status-rejected);
     }
 
+    .badge-no-response {
+      background: var(--status-no-response-bg);
+      color: var(--status-no-response);
+    }
+
     .badge-ir35-outside {
       background: var(--ir35-outside-bg);
       color: var(--ir35-outside);
@@ -323,6 +330,38 @@
     .badge-ir35-inside {
       background: var(--ir35-inside-bg);
       color: var(--ir35-inside);
+    }
+
+    /* Job type badges (Permanent vs Contract) */
+    .badge-permanent {
+      background: #ede7f6;
+      color: #5e35b1;
+    }
+
+    .badge-contract {
+      background: #e0f2f1;
+      color: #00796b;
+    }
+
+    /* === Star / Favourite Button === */
+    .btn-star {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
+      line-height: 1;
+      padding: 0;
+      color: #ccc;
+      transition: color 0.2s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-star:hover {
+      transform: scale(1.2);
+    }
+
+    .btn-star.starred {
+      color: #f5a623;
     }
 
     /* === Card Details === */
@@ -844,7 +883,19 @@
       }
     }
 
-    /* === Toast Notification === */
+    /* === Header Buttons === */
+    .header-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sync-status {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
     .sync-toast {
       position: fixed;
       bottom: 24px;
@@ -869,22 +920,470 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+
+    /* === Stats Dashboard === */
+    .stats-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 1;
+      min-width: 80px;
+      padding: 0 16px;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: var(--color-border);
+      align-self: stretch;
+    }
+
+    .pipeline-section {
+      width: 100%;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .pipeline-bar {
+      display: flex;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #eee;
+    }
+
+    .pipeline-segment {
+      transition: width 0.3s ease;
+      min-width: 0;
+    }
+
+    .pipeline-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+    }
+
+    .pipeline-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pipeline-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .stats-follow-up-alert {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #fff8e1;
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      color: #f57f17;
+      font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+      .stats-bar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .stat-divider { display: none; }
+      .pipeline-section, .stats-follow-up-alert {
+        grid-column: 1 / -1;
+      }
+    }
+
+    /* === Interview Fields (in form) === */
+    .interview-fields {
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--color-border);
+      display: none;
+    }
+
+    .interview-fields.visible {
+      display: block;
+    }
+
+    .interview-fields label {
+      border-left: 3px solid var(--status-interview);
+      padding-left: 8px;
+    }
+
+    /* Interview info displayed on cards */
+    .interview-info {
+      background: var(--status-interview-bg);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .interview-info-label {
+      font-weight: 600;
+      color: var(--status-interview);
+      font-size: 0.8rem;
+    }
+
+    .interview-countdown {
+      font-weight: 600;
+      color: var(--status-interview);
+    }
+
+    /* === Follow-up Reminders === */
+    .follow-up-warning {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .follow-up-nudge {
+      background: #fff8e1;
+      color: #f57f17;
+    }
+
+    .follow-up-overdue {
+      background: #ffebee;
+      color: var(--status-rejected);
+    }
+
+    .follow-up-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* === Job Feed Section === */
+    .feed-section {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 2px solid var(--color-border);
+    }
+
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .feed-header h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feed-count {
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .feed-meta {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+
+    .feed-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 700px) {
+      .feed-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .feed-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .feed-card-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .feed-card-company {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    .feed-card-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      margin: 8px 0;
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+
+    .feed-card-desc {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .feed-source {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .feed-source-reed {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .feed-source-adzuna {
+      background: #fce4ec;
+      color: #c62828;
+    }
+
+    .feed-source-jooble {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .feed-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .btn-track {
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .btn-track:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-dismiss {
+      padding: 6px 14px;
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-dismiss:hover {
+      border-color: var(--status-rejected);
+      color: var(--status-rejected);
+    }
+
+    .feed-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
+      grid-column: 1 / -1;
+    }
+
+    .btn-refresh-feed {
+      padding: 6px 14px;
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-refresh-feed:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* === Login Screen === */
+    #loginScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-bg-alt);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      background: var(--color-bg);
+      padding: 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+    }
+
+    .login-box h2 {
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      font-size: 1.4rem;
+    }
+
+    .login-box p {
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: var(--font);
+      margin-bottom: 12px;
+    }
+
+    .login-box input[type="password"]:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(27, 58, 42, 0.1);
+    }
+
+    .login-box button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .login-box button[type="submit"]:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .login-error {
+      color: var(--status-rejected);
+      font-size: 0.85rem;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+
+    /* Hide the app content until authenticated */
+    .app-hidden header,
+    .app-hidden main,
+    .app-hidden footer { display: none; }
   </style>
 </head>
-<body>
+<body class="app-hidden">
+
+  <!-- Login Screen (shown when not authenticated) -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <h2>Job Tracker</h2>
+      <p>Enter the password to continue</p>
+      <form id="loginForm">
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+        <button type="submit">Sign In</button>
+        <p class="login-error" id="loginError"></p>
+      </form>
+    </div>
+  </div>
 
   <!-- Header -->
   <header>
     <div class="header-inner">
       <div>
         <h1>Job Application Tracker <span class="job-count" id="jobCount">0 applications</span></h1>
+        <div class="sync-status" id="syncStatus"></div>
       </div>
-      <button class="btn-add" id="btnAdd">+ Add New Job</button>
+      <div class="header-buttons">
+        <a href="/interview-prep.html" class="btn-add" style="text-decoration:none">Interview Prep</a>
+        <button class="btn-add" id="btnAdd">+ Add New Job</button>
+      </div>
     </div>
   </header>
 
   <!-- Main Content -->
   <main>
+    <!-- Stats Dashboard -->
+    <section class="stats-bar" id="statsBar"></section>
+
     <!-- Filter Buttons -->
     <nav class="filter-bar" id="filterBar">
       <button class="filter-btn active" data-filter="all">All</button>
@@ -893,6 +1392,7 @@
       <button class="filter-btn" data-filter="interview">Interview</button>
       <button class="filter-btn" data-filter="offered">Offered</button>
       <button class="filter-btn" data-filter="rejected">Rejected</button>
+      <button class="filter-btn" data-filter="no-response">No Response</button>
     </nav>
 
     <!-- Search, Sort & View Toggle -->
@@ -901,8 +1401,10 @@
       <select class="sort-select" id="sortSelect">
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>
+        <option value="starred">Starred first</option>
         <option value="company">Company A-Z</option>
-        <option value="rate-high">Highest rate first</option>
+        <option value="rate-high" selected>Highest rate first</option>
+        <option value="type">Job type</option>
       </select>
       <!-- View toggle: Cards or List -->
       <div class="view-toggle">
@@ -917,14 +1419,30 @@
 
     <!-- Job Cards / List -->
     <section class="cards-container view-cards" id="cardsContainer"></section>
+
+    <!-- Job Feed (auto-discovered jobs from Reed and Adzuna) -->
+    <section class="feed-section" id="feedSection">
+      <div class="feed-header">
+        <h2>
+          Job Feed
+          <span class="feed-count" id="feedCount">0</span>
+        </h2>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="feed-meta" id="feedMeta">Loading feed...</span>
+          <button class="btn-refresh-feed" id="btnRefreshFeed" title="Reload feed from server">Refresh</button>
+        </div>
+      </div>
+      <div class="feed-cards" id="feedCards"></div>
+    </section>
+
   </main>
 
   <!-- Footer -->
   <footer>
-    <p>Your data syncs automatically across all your devices.</p>
+    <p>Your job applications are automatically saved and synced across all your devices.</p>
   </footer>
 
-  <!-- Toast notification -->
+  <!-- Sync toast notification -->
   <div class="sync-toast" id="syncToast"></div>
 
   <!-- Add/Edit Modal -->
@@ -970,9 +1488,19 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="fieldDuration">Contract Duration</label>
+            <label for="fieldJobType">Job Type</label>
+            <select id="fieldJobType">
+              <option value="contract">Contract</option>
+              <option value="permanent">Permanent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fieldDuration">Duration</label>
             <input type="text" id="fieldDuration" placeholder="e.g. 6 months">
           </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
             <label for="fieldStatus">Status</label>
             <select id="fieldStatus">
@@ -981,6 +1509,7 @@
               <option value="interview">Interview</option>
               <option value="offered">Offered</option>
               <option value="rejected">Rejected</option>
+              <option value="no-response">No Response</option>
             </select>
           </div>
         </div>
@@ -988,6 +1517,38 @@
         <div class="form-group" id="dateGroup">
           <label for="fieldDate">Date Applied</label>
           <input type="date" id="fieldDate">
+        </div>
+
+        <!-- Interview-specific fields (only visible when status = Interview) -->
+        <div class="interview-fields" id="interviewFields">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fieldInterviewDate">Interview Date & Time</label>
+              <input type="datetime-local" id="fieldInterviewDate">
+            </div>
+            <div class="form-group">
+              <label for="fieldInterviewType">Interview Type</label>
+              <select id="fieldInterviewType">
+                <option value="">Not specified</option>
+                <option value="phone">Phone call</option>
+                <option value="video">Video call</option>
+                <option value="in-person">In person</option>
+                <option value="panel">Panel interview</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fieldInterviewerName">Interviewer Name / Contact</label>
+            <input type="text" id="fieldInterviewerName" placeholder="e.g. Sarah Jones, Hiring Manager">
+          </div>
+          <div class="form-group">
+            <label for="fieldFollowUpDate">Follow-up Date</label>
+            <input type="date" id="fieldFollowUpDate">
+          </div>
+          <div class="form-group">
+            <label for="fieldInterviewNotes">Interview Notes / Feedback</label>
+            <textarea id="fieldInterviewNotes" placeholder="How it went, what they asked, next steps..."></textarea>
+          </div>
         </div>
 
         <div class="form-group">
@@ -1020,16 +1581,98 @@
   </div>
 
   <script>
+    /* === Authentication === */
+    const AUTH_TOKEN_KEY = 'jobTracker_authToken';
+
+    // Wrapper around fetch that adds the auth token to every API request
+    function authFetch(url, options) {
+      options = options || {};
+      options.headers = options.headers || {};
+      var token = localStorage.getItem(AUTH_TOKEN_KEY);
+      if (token) {
+        options.headers['Authorization'] = 'Bearer ' + token;
+      }
+      return fetch(url, options);
+    }
+
+    // Check if the user has a valid auth token on page load
+    async function checkAuth() {
+      var token = localStorage.getItem(AUTH_TOKEN_KEY);
+
+      if (!token) {
+        showLogin();
+        return;
+      }
+
+      // Verify the token is still valid with the server
+      try {
+        var response = await fetch('/api/auth', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (response.ok) {
+          hideLogin();
+        } else {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+          showLogin();
+        }
+      } catch (err) {
+        // Network error, but we have a token, so let the app try to load
+        // (individual API calls will fail if truly offline)
+        hideLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.body.classList.add('app-hidden');
+    }
+
+    function hideLogin() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.body.classList.remove('app-hidden');
+      initApp();
+    }
+
+    async function handleLogin(password) {
+      var errorEl = document.getElementById('loginError');
+      errorEl.textContent = '';
+
+      try {
+        var response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password })
+        });
+
+        if (response.ok) {
+          var data = await response.json();
+          localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+          hideLogin();
+        } else {
+          errorEl.textContent = 'Wrong password. Please try again.';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Connection error. Please try again.';
+      }
+    }
+
+    // Called after successful authentication
+    function initApp() {
+      initJobs();
+      loadFeed();
+    }
+
     /* === Constants === */
     const STORAGE_KEY = 'jobTracker_jobs';
-    const API_URL = '/api/jobs';
+    const SYNC_TS_KEY = 'jobTracker_lastModified';
 
     const STATUS_LABELS = {
       'want-to-apply': 'Want to Apply',
       'applied': 'Applied',
       'interview': 'Interview',
       'offered': 'Offered',
-      'rejected': 'Rejected'
+      'rejected': 'Rejected',
+      'no-response': 'No Response'
     };
 
     const IR35_LABELS = {
@@ -1038,14 +1681,30 @@
       'unspecified': ''
     };
 
+    const JOB_TYPE_LABELS = {
+      'contract': 'Contract',
+      'permanent': 'Permanent'
+    };
+
+    /* === Fallback data (used only if the database is empty, e.g. first ever load) === */
+    const SEED_JOBS = [
+      {"id":"seed-1","title":"Business Architect","company":"NineTech","recruiter":"Abigail Blaauw","location":"Remote (some London travel)","ir35":"outside","rate":"600","duration":"6 months","jobType":"contract","starred":false,"status":"applied","dateApplied":"2026-02-05","jobLink":"https://www.linkedin.com/jobs/view/4365797849/","notes":"No longer accepting applications","createdAt":"2026-02-05T10:00:00.000Z","updatedAt":"2026-02-05T10:00:00.000Z"},
+      {"id":"seed-3","title":"AI Business Analyst (Applied AI)","company":"Lorien","recruiter":"","location":"London (Hybrid - 3 days/week)","ir35":"outside","rate":"","duration":"6 months","jobType":"contract","starred":false,"status":"applied","dateApplied":"2026-02-09","jobLink":"https://www.linkedin.com/jobs/view/4365101739/","notes":"Reports to Transformation Director. AI COE team. Translating business needs into build-ready requirements for applied AI (GenAI/LLMs, ML, automation).","createdAt":"2026-02-09T10:00:00.000Z","updatedAt":"2026-02-09T10:00:00.000Z"},
+      {"id":"seed-4","title":"Business Architect (12-month FTC)","company":"Zurich","recruiter":"","location":"London (also Swindon, Fareham, Manchester, Birmingham, Glasgow)","ir35":"unspecified","rate":"~75,000/year","duration":"12 months","jobType":"permanent","starred":false,"status":"applied","dateApplied":"2026-02-09","jobLink":"https://talents.studysmarter.co.uk/companies/zurich-56-company-ltd/business-architect-12-month-fixed-term-contract-6868211/","notes":"Fixed-term contract (not contractor). 12% pension, annual bonus, private medical, 25 days holiday.","createdAt":"2026-02-09T12:00:00.000Z","updatedAt":"2026-02-09T12:00:00.000Z"},
+      {"id":"seed-2","title":"Business Architect","company":"Credera","recruiter":"Sophie Socrates","location":"London","ir35":"inside","rate":"550-700","duration":"12 months","jobType":"contract","starred":false,"status":"applied","dateApplied":"2026-02-08","jobLink":"https://www.linkedin.com/jobs/view/4369929764/","notes":"","createdAt":"2026-02-08T10:00:00.000Z","updatedAt":"2026-02-08T10:00:00.000Z"},
+      {"id":"seed-5","title":"Business Architect","company":"Entasis Partners","recruiter":"Tom Bending","location":"London Area (Hybrid)","ir35":"unspecified","rate":"75,000-100,000/year","duration":"Permanent","jobType":"permanent","starred":false,"status":"applied","dateApplied":"2026-02-09","jobLink":"https://www.linkedin.com/jobs/view/4361796440/","notes":"Permanent role (not contract). Salary 75k-100k + bonus + benefits. Hybrid working.","createdAt":"2026-02-09T18:00:00.000Z","updatedAt":"2026-02-09T18:00:00.000Z"},
+      {"id":"seed-6","title":"Business Architect","company":"Differentis","recruiter":"","location":"United Kingdom (Hybrid)","ir35":"unspecified","rate":"","duration":"Permanent","jobType":"permanent","starred":false,"status":"applied","dateApplied":"2026-02-10","jobLink":"https://www.linkedin.com/jobs/view/4360552886/","notes":"Permanent role. Hybrid working. 30 days annual leave, private health care, pension. Requires TOGAF/BIZBOK frameworks.","createdAt":"2026-02-10T10:00:00.000Z","updatedAt":"2026-02-10T10:00:00.000Z"}
+    ];
+
     /* === State === */
     let jobs = [];
     let activeFilter = 'all';
     let searchTerm = '';
-    let sortBy = 'newest';
+    let sortBy = 'rate-high';
     let viewMode = 'cards';
     let editingId = null;
     let deleteId = null;
+    let isSaving = false;
 
     /* === DOM References === */
     const cardsContainer = document.getElementById('cardsContainer');
@@ -1061,53 +1720,93 @@
     const dateGroup = document.getElementById('dateGroup');
     const fieldStatus = document.getElementById('fieldStatus');
 
-    /* === Storage (server-synced with localStorage fallback) === */
+    /* === Database Storage (Upstash Redis via serverless API) === */
 
-    /* Save jobs to the server, with localStorage as a fast local cache */
-    function saveJobs() {
-      // Save locally first for instant responsiveness
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs)); } catch (e) {}
+    // Save jobs to the database (called after every add/edit/delete)
+    async function saveJobs() {
+      // Also keep a local copy in localStorage for fast loading
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+      localStorage.setItem(SYNC_TS_KEY, new Date().toISOString());
 
-      // Then save to the server in the background
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(jobs)
-      }).catch(function(err) {
-        showToast('Could not save to server. Your changes are saved locally.');
-      });
+      // Save to the database in the background
+      if (isSaving) return;
+      isSaving = true;
+      updateSyncStatus('Saving...');
+
+      try {
+        const response = await authFetch('/api/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobs: jobs, lastModified: new Date().toISOString() })
+        });
+
+        if (!response.ok) throw new Error('Save failed');
+        const result = await response.json();
+        updateSyncStatus('Saved just now');
+      } catch (err) {
+        console.error('Failed to save to database:', err);
+        updateSyncStatus('Saved locally (offline)');
+      } finally {
+        isSaving = false;
+      }
     }
 
-    /* Load jobs from the server on startup */
+    // Load jobs from the database, falling back to localStorage or seed data
     async function initJobs() {
-      try {
-        const response = await fetch(API_URL);
-        if (response.ok) {
-          const serverJobs = await response.json();
-          if (Array.isArray(serverJobs) && serverJobs.length > 0) {
-            jobs = serverJobs;
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs)); } catch (e) {}
-            return;
-          }
-        }
-      } catch (err) {
-        // Server unavailable, fall through to localStorage
+      updateSyncStatus('Loading...');
+
+      // First, show whatever we have locally for a quick start
+      const localData = localStorage.getItem(STORAGE_KEY);
+      if (localData) {
+        try {
+          jobs = JSON.parse(localData);
+          renderJobs();
+        } catch (e) { /* ignore bad local data */ }
       }
 
-      // Fallback: load from localStorage if server failed or returned empty
+      // Then try to fetch the latest from the database
       try {
-        const localData = localStorage.getItem(STORAGE_KEY);
-        if (localData) {
-          jobs = JSON.parse(localData);
-          return;
-        }
-      } catch (e) {}
+        const response = await authFetch('/api/jobs');
+        if (!response.ok) throw new Error('Fetch failed');
+        const data = await response.json();
 
-      // No data anywhere, start empty
-      jobs = [];
+        if (data.jobs && data.jobs.length > 0) {
+          // Database has data, use it (it's the single source of truth)
+          jobs = data.jobs;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+          localStorage.setItem(SYNC_TS_KEY, data.lastModified || new Date().toISOString());
+          renderJobs();
+          updateSyncStatus('Synced');
+        } else if (!localData || JSON.parse(localData).length === 0) {
+          // Database is empty and no local data, seed with initial jobs
+          jobs = SEED_JOBS.slice();
+          renderJobs();
+          // Save seed data to the database
+          await saveJobs();
+          updateSyncStatus('Initialised');
+        } else {
+          // Database is empty but we have local data, push it up
+          await saveJobs();
+          updateSyncStatus('Synced');
+        }
+      } catch (err) {
+        console.error('Could not reach database:', err);
+        // Offline, use whatever we loaded locally (or seed data)
+        if (jobs.length === 0) {
+          jobs = SEED_JOBS.slice();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+        }
+        renderJobs();
+        updateSyncStatus('Offline mode');
+      }
     }
 
-    /* Toast notification for status messages */
+    // Update the small status text under the title
+    function updateSyncStatus(message) {
+      const statusEl = document.getElementById('syncStatus');
+      if (statusEl) statusEl.textContent = message;
+    }
+
     function showToast(message) {
       var toast = document.getElementById('syncToast');
       if (!toast) return;
@@ -1178,6 +1877,13 @@
 
       // Sort
       filtered.sort(function(a, b) {
+        if (sortBy === 'starred') {
+          // Starred jobs come first, then sort by newest within each group
+          const aStarred = a.starred ? 1 : 0;
+          const bStarred = b.starred ? 1 : 0;
+          if (bStarred !== aStarred) return bStarred - aStarred;
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
         if (sortBy === 'newest') {
           return new Date(b.createdAt) - new Date(a.createdAt);
         }
@@ -1189,6 +1895,14 @@
         }
         if (sortBy === 'rate-high') {
           return parseRate(b.rate) - parseRate(a.rate);
+        }
+        if (sortBy === 'type') {
+          // Permanent first, then contract, then sort by newest within each group
+          const typeOrder = { 'permanent': 0, 'contract': 1 };
+          const aOrder = typeOrder[a.jobType] !== undefined ? typeOrder[a.jobType] : 2;
+          const bOrder = typeOrder[b.jobType] !== undefined ? typeOrder[b.jobType] : 2;
+          if (aOrder !== bOrder) return aOrder - bOrder;
+          return new Date(b.createdAt) - new Date(a.createdAt);
         }
         return 0;
       });
@@ -1229,6 +1943,120 @@
         html += renderListRow(job);
       });
       cardsContainer.innerHTML = html;
+      renderStats();
+    }
+
+    /* === Stats Dashboard === */
+    function renderStats() {
+      var counts = { 'want-to-apply': 0, 'applied': 0, 'interview': 0, 'offered': 0, 'rejected': 0, 'no-response': 0 };
+      jobs.forEach(function(j) {
+        if (counts.hasOwnProperty(j.status)) counts[j.status]++;
+      });
+
+      var totalApplied = counts.applied + counts.interview + counts.offered + counts.rejected + counts['no-response'];
+      var responses = counts.interview + counts.offered;
+      var responseRate = totalApplied > 0 ? Math.round((responses / totalApplied) * 100) + '%' : 'N/A';
+
+      // Days since last application
+      var daysIdle = 'N/A';
+      var latestDate = null;
+      jobs.forEach(function(j) {
+        if (j.dateApplied) {
+          var d = new Date(j.dateApplied);
+          if (!latestDate || d > latestDate) latestDate = d;
+        }
+      });
+      if (latestDate) {
+        var diff = Math.floor((new Date() - latestDate) / (1000 * 60 * 60 * 24));
+        daysIdle = diff;
+      }
+
+      // Follow-up alerts (applied jobs older than 7 days)
+      var needFollowUp = 0;
+      var now = new Date();
+      jobs.forEach(function(j) {
+        if (j.status === 'applied' && j.dateApplied) {
+          var applied = new Date(j.dateApplied);
+          var daysSince = Math.floor((now - applied) / (1000 * 60 * 60 * 24));
+          if (daysSince >= 7) needFollowUp++;
+        }
+      });
+
+      // Pipeline bar
+      var total = jobs.length;
+      var pipelineColors = {
+        'want-to-apply': 'var(--status-want)',
+        'applied': 'var(--status-applied)',
+        'interview': 'var(--status-interview)',
+        'offered': 'var(--status-offered)',
+        'rejected': 'var(--status-rejected)',
+        'no-response': 'var(--status-no-response)'
+      };
+      var pipelineLabels = {
+        'want-to-apply': 'Want to Apply',
+        'applied': 'Applied',
+        'interview': 'Interview',
+        'offered': 'Offered',
+        'rejected': 'Rejected',
+        'no-response': 'No Response'
+      };
+
+      var pipelineHtml = '';
+      var legendHtml = '';
+      var statuses = ['want-to-apply', 'applied', 'interview', 'offered', 'rejected', 'no-response'];
+      statuses.forEach(function(s) {
+        if (counts[s] > 0) {
+          var pct = (counts[s] / total * 100).toFixed(1);
+          pipelineHtml += '<div class="pipeline-segment" style="width:' + pct + '%;background:' + pipelineColors[s] + '"></div>';
+        }
+        if (counts[s] > 0) {
+          legendHtml += '<span class="pipeline-legend-item"><span class="pipeline-legend-dot" style="background:' + pipelineColors[s] + '"></span>' + pipelineLabels[s] + ' (' + counts[s] + ')</span>';
+        }
+      });
+
+      var followUpHtml = '';
+      if (needFollowUp > 0) {
+        followUpHtml = '<div class="stats-follow-up-alert">&#128340; ' + needFollowUp + ' application' + (needFollowUp !== 1 ? 's' : '') + ' may need a follow-up (no response in 7+ days)</div>';
+      }
+
+      document.getElementById('statsBar').innerHTML =
+        '<div class="stat-item"><div class="stat-value">' + totalApplied + '</div><div class="stat-label">Applied</div></div>' +
+        '<div class="stat-divider"></div>' +
+        '<div class="stat-item"><div class="stat-value">' + responseRate + '</div><div class="stat-label">Response Rate</div></div>' +
+        '<div class="stat-divider"></div>' +
+        '<div class="stat-item"><div class="stat-value">' + counts.interview + '</div><div class="stat-label">Interviews</div></div>' +
+        '<div class="stat-divider"></div>' +
+        '<div class="stat-item"><div class="stat-value">' + daysIdle + '</div><div class="stat-label">Days Idle</div></div>' +
+        (total > 0 ? '<div class="pipeline-section"><div class="pipeline-bar">' + pipelineHtml + '</div><div class="pipeline-legend">' + legendHtml + '</div></div>' : '') +
+        followUpHtml;
+    }
+
+    /* === Follow-up Status Helper === */
+    function getFollowUpStatus(job) {
+      if (job.status !== 'applied' && job.status !== 'interview') return null;
+
+      var now = new Date();
+
+      if (job.status === 'applied' && job.dateApplied) {
+        var applied = new Date(job.dateApplied);
+        var diffDays = Math.floor((now - applied) / (1000 * 60 * 60 * 24));
+        if (diffDays >= 10) {
+          return { level: 'overdue', message: 'No response in ' + diffDays + ' days. Consider following up or moving on.' };
+        }
+        if (diffDays >= 5) {
+          return { level: 'nudge', message: 'Applied ' + diffDays + ' days ago. Consider sending a follow-up.' };
+        }
+      }
+
+      if (job.status === 'interview' && job.followUpDate) {
+        var followUp = new Date(job.followUpDate);
+        var followDiff = Math.floor((now - followUp) / (1000 * 60 * 60 * 24));
+        if (followDiff >= 0) {
+          return { level: 'nudge', message: 'Follow-up date has arrived. Time to chase!' };
+        }
+      }
+
+      return null;
     }
 
     /* Renders a full card (shown in card view, hidden in list view) */
@@ -1241,6 +2069,18 @@
         const ir35Label = IR35_LABELS[job.ir35];
         ir35Badge = '<span class="' + getIR35BadgeClass(job.ir35) + '">' + ir35Label + '</span>';
       }
+
+      // Job type badge (Permanent or Contract)
+      let typeBadge = '';
+      if (job.jobType) {
+        const typeLabel = JOB_TYPE_LABELS[job.jobType] || job.jobType;
+        typeBadge = '<span class="badge badge-' + job.jobType + '">' + typeLabel + '</span>';
+      }
+
+      // Star button
+      const starClass = job.starred ? 'btn-star starred' : 'btn-star';
+      const starIcon = job.starred ? '&#9733;' : '&#9734;';
+      const starBtn = '<button class="' + starClass + '" data-id="' + job.id + '" data-action="star" title="' + (job.starred ? 'Remove from favourites' : 'Add to favourites') + '">' + starIcon + '</button>';
 
       let detailsHtml = '';
       if (job.location) {
@@ -1261,6 +2101,51 @@
         notesHtml = '<div class="card-notes"><span class="card-notes-label">Notes</span> ' + escapeHtml(job.notes) + '</div>';
       }
 
+      // Interview info (only for jobs at interview stage)
+      var interviewHtml = '';
+      if (job.status === 'interview') {
+        var interviewParts = [];
+        if (job.interviewDate) {
+          var intDate = new Date(job.interviewDate);
+          var nowDate = new Date();
+          var diffDays = Math.ceil((intDate - nowDate) / (1000 * 60 * 60 * 24));
+          var dateDisplay = intDate.toLocaleDateString('en-GB', {
+            weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+          });
+          var countdown = '';
+          if (diffDays > 0) {
+            countdown = ' <span class="interview-countdown">(in ' + diffDays + ' day' + (diffDays !== 1 ? 's' : '') + ')</span>';
+          } else if (diffDays === 0) {
+            countdown = ' <span class="interview-countdown">(today!)</span>';
+          } else {
+            countdown = ' <span style="color:var(--color-text-secondary)">(passed)</span>';
+          }
+          interviewParts.push('<span class="interview-info-label">When</span> ' + dateDisplay + countdown);
+        }
+        if (job.interviewType) {
+          var typeLabels = { phone: 'Phone call', video: 'Video call', 'in-person': 'In person', panel: 'Panel interview' };
+          interviewParts.push('<span class="interview-info-label">Type</span> ' + (typeLabels[job.interviewType] || job.interviewType));
+        }
+        if (job.interviewerName) {
+          interviewParts.push('<span class="interview-info-label">With</span> ' + escapeHtml(job.interviewerName));
+        }
+        if (job.interviewNotes) {
+          interviewParts.push('<span class="interview-info-label">Notes</span> ' + escapeHtml(job.interviewNotes));
+        }
+        if (interviewParts.length > 0) {
+          interviewHtml = '<div class="interview-info">' + interviewParts.join('<br>') + '</div>';
+        }
+      }
+
+      // Follow-up reminder
+      var followUpHtml = '';
+      var followUp = getFollowUpStatus(job);
+      if (followUp) {
+        var followClass = followUp.level === 'overdue' ? 'follow-up-warning follow-up-overdue' : 'follow-up-warning follow-up-nudge';
+        var icon = followUp.level === 'overdue' ? '&#9888;' : '&#128340;';
+        followUpHtml = '<div class="' + followClass + '"><span class="follow-up-icon">' + icon + '</span> ' + followUp.message + '</div>';
+      }
+
       let linkHtml = '';
       if (job.jobLink) {
         linkHtml = '<a class="card-link" href="' + escapeHtml(job.jobLink) + '" target="_blank" rel="noopener">View Job Ad</a>';
@@ -1268,15 +2153,18 @@
 
       return '<article class="job-card">' +
         '<div class="card-top">' +
-          '<div>' +
+          starBtn +
+          '<div style="flex:1;min-width:0">' +
             '<div class="card-title">' + escapeHtml(job.title) + '</div>' +
             '<div class="card-company">' + escapeHtml(job.company) + '</div>' +
             (job.recruiter ? '<div class="card-recruiter">Recruiter: ' + escapeHtml(job.recruiter) + '</div>' : '') +
           '</div>' +
-          '<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">' + statusBadge + ir35Badge + '</div>' +
+          '<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">' + typeBadge + statusBadge + ir35Badge + '</div>' +
         '</div>' +
         (detailsHtml ? '<div class="card-details">' + detailsHtml + '</div>' : '') +
         notesHtml +
+        interviewHtml +
+        followUpHtml +
         linkHtml +
         '<div class="card-actions">' +
           '<button class="btn-edit" data-id="' + job.id + '">Edit</button>' +
@@ -1296,16 +2184,38 @@
         ir35Badge = '<span class="' + getIR35BadgeClass(job.ir35) + '">' + ir35Label + '</span>';
       }
 
+      // Job type badge for list view
+      let typeBadge = '';
+      if (job.jobType) {
+        const typeLabel = JOB_TYPE_LABELS[job.jobType] || job.jobType;
+        typeBadge = '<span class="badge badge-' + job.jobType + '">' + typeLabel + '</span>';
+      }
+
+      // Star button for list view
+      const starClass = job.starred ? 'btn-star starred' : 'btn-star';
+      const starIcon = job.starred ? '&#9733;' : '&#9734;';
+      const starBtn = '<button class="' + starClass + '" data-id="' + job.id + '" data-action="star" title="' + (job.starred ? 'Remove from favourites' : 'Add to favourites') + '">' + starIcon + '</button>';
+
       const rateText = job.rate ? formatRate(job.rate) : '';
 
+      // Follow-up indicator for list view
+      var listFollowUp = getFollowUpStatus(job);
+      var listFollowUpHtml = '';
+      if (listFollowUp) {
+        var fuColor = listFollowUp.level === 'overdue' ? 'var(--status-rejected)' : '#f57f17';
+        var fuIcon = listFollowUp.level === 'overdue' ? '&#9888;' : '&#128340;';
+        listFollowUpHtml = '<span style="font-size:0.8rem;color:' + fuColor + '" title="' + listFollowUp.message + '">' + fuIcon + '</span>';
+      }
+
       return '<div class="list-row">' +
+        starBtn +
         '<div class="list-info">' +
           '<span class="list-title">' + escapeHtml(job.title) + '</span>' +
           '<span class="list-company">' + escapeHtml(job.company) + '</span>' +
           (rateText ? '<span class="list-rate">' + rateText + '</span>' : '') +
           (job.location ? '<span class="list-location">' + escapeHtml(job.location) + '</span>' : '') +
         '</div>' +
-        '<div class="list-badges">' + statusBadge + ir35Badge + '</div>' +
+        '<div class="list-badges">' + listFollowUpHtml + typeBadge + statusBadge + ir35Badge + '</div>' +
         '<div class="list-actions">' +
           '<button class="btn-edit" data-id="' + job.id + '">Edit</button>' +
           '<button class="btn-delete" data-id="' + job.id + '">Remove</button>' +
@@ -1329,15 +2239,23 @@
           document.getElementById('fieldIR35').value = job.ir35 || 'unspecified';
           document.getElementById('fieldRate').value = job.rate || '';
           document.getElementById('fieldDuration').value = job.duration || '';
+          document.getElementById('fieldJobType').value = job.jobType || 'contract';
           document.getElementById('fieldStatus').value = job.status || 'want-to-apply';
           document.getElementById('fieldDate').value = job.dateApplied || '';
           document.getElementById('fieldLink').value = job.jobLink || '';
           document.getElementById('fieldNotes').value = job.notes || '';
+          // Interview fields
+          document.getElementById('fieldInterviewDate').value = job.interviewDate || '';
+          document.getElementById('fieldInterviewType').value = job.interviewType || '';
+          document.getElementById('fieldInterviewerName').value = job.interviewerName || '';
+          document.getElementById('fieldFollowUpDate').value = job.followUpDate || '';
+          document.getElementById('fieldInterviewNotes').value = job.interviewNotes || '';
         }
       } else {
         modalTitle.textContent = 'Add New Job';
         document.getElementById('btnSave').textContent = 'Save';
         jobForm.reset();
+        document.getElementById('fieldJobType').value = 'contract';
         document.getElementById('fieldStatus').value = 'want-to-apply';
       }
 
@@ -1353,12 +2271,21 @@
     }
 
     /* Show/hide the date field based on status (hide for "Want to Apply") */
+    /* Also show/hide interview fields when status is "Interview" */
     function toggleDateField() {
       const status = fieldStatus.value;
       if (status === 'want-to-apply') {
         dateGroup.style.display = 'none';
       } else {
         dateGroup.style.display = 'block';
+      }
+      var interviewFields = document.getElementById('interviewFields');
+      if (interviewFields) {
+        if (status === 'interview') {
+          interviewFields.classList.add('visible');
+        } else {
+          interviewFields.classList.remove('visible');
+        }
       }
     }
 
@@ -1374,10 +2301,17 @@
         ir35: data.ir35,
         rate: data.rate,
         duration: data.duration,
+        jobType: data.jobType,
+        starred: false,
         status: data.status,
         dateApplied: data.dateApplied,
         jobLink: data.jobLink,
         notes: data.notes,
+        interviewDate: data.interviewDate || '',
+        interviewType: data.interviewType || '',
+        interviewerName: data.interviewerName || '',
+        followUpDate: data.followUpDate || '',
+        interviewNotes: data.interviewNotes || '',
         createdAt: now,
         updatedAt: now
       };
@@ -1400,6 +2334,16 @@
       renderJobs();
     }
 
+    /* Toggle the starred/favourite status of a job */
+    function toggleStar(id) {
+      const idx = jobs.findIndex(function(j) { return j.id === id; });
+      if (idx === -1) return;
+      jobs[idx].starred = !jobs[idx].starred;
+      jobs[idx].updatedAt = new Date().toISOString();
+      saveJobs();
+      renderJobs();
+    }
+
     /* === Confirm Dialog === */
     function openConfirm(id) {
       deleteId = id;
@@ -1415,10 +2359,178 @@
       deleteId = null;
     }
 
+    /* === Job Feed State === */
+    let feedItems = [];
+    let feedMeta = {};
+
+    /* === Feed Functions === */
+
+    // Parse a date string that might be in DD/MM/YYYY format (from Reed)
+    // or standard ISO format (from Adzuna/Jooble)
+    function parseDate(str) {
+      if (!str) return null;
+      // Check for DD/MM/YYYY pattern
+      var parts = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (parts) {
+        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]));
+      }
+      return new Date(str);
+    }
+
+    // Load feed items from the server
+    async function loadFeed() {
+      var feedMetaEl = document.getElementById('feedMeta');
+      var feedCountEl = document.getElementById('feedCount');
+      feedMetaEl.textContent = 'Loading feed...';
+
+      try {
+        var response = await authFetch('/api/feed');
+        if (!response.ok) throw new Error('Feed fetch failed');
+        var data = await response.json();
+
+        feedItems = data.items || [];
+        feedMeta = data.meta || {};
+        renderFeed();
+      } catch (err) {
+        console.error('Failed to load feed:', err);
+        feedMetaEl.textContent = 'Could not load feed';
+        feedCountEl.textContent = '0';
+      }
+    }
+
+    // Render feed cards
+    function renderFeed() {
+      var container = document.getElementById('feedCards');
+      var feedCountEl = document.getElementById('feedCount');
+      var feedMetaEl = document.getElementById('feedMeta');
+
+      feedCountEl.textContent = feedItems.length;
+
+      // Show when the last scan happened
+      if (feedMeta.lastScan) {
+        var scanDate = new Date(feedMeta.lastScan);
+        var now = new Date();
+        var hoursAgo = Math.round((now - scanDate) / (1000 * 60 * 60));
+        if (hoursAgo < 1) {
+          feedMetaEl.textContent = 'Last scanned: just now';
+        } else if (hoursAgo < 24) {
+          feedMetaEl.textContent = 'Last scanned: ' + hoursAgo + ' hour' + (hoursAgo !== 1 ? 's' : '') + ' ago';
+        } else {
+          var daysAgo = Math.round(hoursAgo / 24);
+          feedMetaEl.textContent = 'Last scanned: ' + daysAgo + ' day' + (daysAgo !== 1 ? 's' : '') + ' ago';
+        }
+      } else {
+        feedMetaEl.textContent = 'No scans yet';
+      }
+
+      if (feedItems.length === 0) {
+        container.innerHTML = '<div class="feed-empty">No new jobs found. The feed scans daily for "Business Architect" roles on Reed and Adzuna.</div>';
+        return;
+      }
+
+      // Sort by most recently published first
+      feedItems.sort(function(a, b) {
+        var dateA = a.datePosted ? parseDate(a.datePosted) : new Date(0);
+        var dateB = b.datePosted ? parseDate(b.datePosted) : new Date(0);
+        return dateB - dateA;
+      });
+
+      var html = '';
+      feedItems.forEach(function(item) {
+        var sourceClass = 'feed-source feed-source-' + item.source;
+
+        var details = '';
+        if (item.location) details += '<span>' + escapeHtml(item.location) + '</span>';
+        if (item.salaryText) details += '<span>' + escapeHtml(String(item.salaryText)) + '</span>';
+        if (item.jobType) {
+          var typeLabel = item.jobType === 'permanent' ? 'Permanent' : 'Contract';
+          details += '<span>' + typeLabel + '</span>';
+        }
+        if (item.datePosted) {
+          var posted = parseDate(item.datePosted);
+          if (posted && !isNaN(posted.getTime())) {
+            var day = posted.getDate();
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var dateStr = day + ' ' + months[posted.getMonth()] + ' ' + posted.getFullYear();
+            details += '<span>Posted ' + dateStr + '</span>';
+          }
+        }
+
+        html += '<div class="feed-card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
+            '<div>' +
+              '<div class="feed-card-title">' + escapeHtml(item.title) + '</div>' +
+              '<div class="feed-card-company">' + escapeHtml(item.company) + '</div>' +
+            '</div>' +
+            '<span class="' + sourceClass + '">' + item.source + '</span>' +
+          '</div>' +
+          (details ? '<div class="feed-card-details">' + details + '</div>' : '') +
+          (item.description ? '<div class="feed-card-desc">' + escapeHtml(item.description) + '</div>' : '') +
+          (item.jobLink ? '<a class="card-link" href="' + escapeHtml(item.jobLink) + '" target="_blank" rel="noopener">View original listing</a>' : '') +
+          '<div class="feed-card-actions">' +
+            '<button class="btn-track" data-feed-id="' + item.id + '" data-action="add">+ Add to Tracker</button>' +
+            '<button class="btn-dismiss" data-feed-id="' + item.id + '" data-action="dismiss">Dismiss</button>' +
+          '</div>' +
+        '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Dismiss a feed item (hide it permanently)
+    async function dismissFeedItem(feedItemId) {
+      try {
+        var response = await authFetch('/api/feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'dismiss', feedItemId: feedItemId }),
+        });
+        if (!response.ok) throw new Error('Dismiss failed');
+
+        // Remove from local array and re-render
+        feedItems = feedItems.filter(function(item) { return item.id !== feedItemId; });
+        renderFeed();
+        showToast('Job dismissed');
+      } catch (err) {
+        console.error('Dismiss error:', err);
+        showToast('Failed to dismiss job');
+      }
+    }
+
+    // Add a feed item to the main job tracker
+    async function addFeedToTracker(feedItemId) {
+      try {
+        var response = await authFetch('/api/feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'add-to-tracker', feedItemId: feedItemId }),
+        });
+        if (!response.ok) throw new Error('Add to tracker failed');
+
+        // Remove from feed and re-render feed
+        feedItems = feedItems.filter(function(item) { return item.id !== feedItemId; });
+        renderFeed();
+
+        // Reload the main job list so the new job appears
+        await initJobs();
+        showToast('Job added to your tracker');
+      } catch (err) {
+        console.error('Add to tracker error:', err);
+        showToast('Failed to add job to tracker');
+      }
+    }
+
     /* === Event Listeners === */
-    document.addEventListener('DOMContentLoaded', async function() {
-      await initJobs();
-      renderJobs();
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication first; initApp() runs after successful auth
+      checkAuth();
+
+      // Login form handler
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var password = document.getElementById('loginPassword').value;
+        handleLogin(password);
+      });
 
       // Add new job button
       document.getElementById('btnAdd').addEventListener('click', function() {
@@ -1445,10 +2557,16 @@
           ir35: document.getElementById('fieldIR35').value,
           rate: document.getElementById('fieldRate').value.trim(),
           duration: document.getElementById('fieldDuration').value.trim(),
+          jobType: document.getElementById('fieldJobType').value,
           status: document.getElementById('fieldStatus').value,
           dateApplied: document.getElementById('fieldDate').value,
           jobLink: document.getElementById('fieldLink').value.trim(),
-          notes: document.getElementById('fieldNotes').value.trim()
+          notes: document.getElementById('fieldNotes').value.trim(),
+          interviewDate: document.getElementById('fieldInterviewDate').value,
+          interviewType: document.getElementById('fieldInterviewType').value,
+          interviewerName: document.getElementById('fieldInterviewerName').value.trim(),
+          followUpDate: document.getElementById('fieldFollowUpDate').value,
+          interviewNotes: document.getElementById('fieldInterviewNotes').value.trim()
         };
 
         if (!data.title || !data.company) return;
@@ -1461,11 +2579,16 @@
         closeModal();
       });
 
-      // Edit and delete buttons on cards/list rows (event delegation)
+      // Edit, delete, and star buttons on cards/list rows (event delegation)
       cardsContainer.addEventListener('click', function(e) {
         const editBtn = e.target.closest('.btn-edit');
         const deleteBtn = e.target.closest('.btn-delete');
+        const starBtn = e.target.closest('.btn-star');
 
+        if (starBtn) {
+          toggleStar(starBtn.dataset.id);
+          return;
+        }
         if (editBtn) {
           openModal(editBtn.dataset.id);
         }
@@ -1514,16 +2637,36 @@
         }, 250);
       });
 
-      // View toggle (Cards / List)
-      document.querySelectorAll('.view-btn').forEach(function(btn) {
+      // View toggle (Cards / List) - scoped to .view-toggle only
+      document.querySelectorAll('.view-toggle .view-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
           viewMode = btn.dataset.view;
-          document.querySelectorAll('.view-btn').forEach(function(b) {
+          document.querySelectorAll('.view-toggle .view-btn').forEach(function(b) {
             b.classList.remove('active');
           });
           btn.classList.add('active');
           renderJobs();
         });
+      });
+
+      // Feed card button clicks (event delegation)
+      document.getElementById('feedCards').addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-feed-id]');
+        if (!btn) return;
+
+        var feedId = btn.dataset.feedId;
+        var action = btn.dataset.action;
+
+        if (action === 'add') {
+          addFeedToTracker(feedId);
+        } else if (action === 'dismiss') {
+          dismissFeedItem(feedId);
+        }
+      });
+
+      // Refresh feed button
+      document.getElementById('btnRefreshFeed').addEventListener('click', function() {
+        loadFeed();
       });
 
       // Escape key closes modals
