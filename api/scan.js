@@ -2,6 +2,21 @@ const { Redis } = require('@upstash/redis');
 const crypto = require('crypto');
 
 const FEED_KEY = 'tracker_feed';
+const TOKEN_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+
+// Validate a user auth token (same logic as auth.js)
+function validateToken(token, secret) {
+  if (!token) return false;
+  const parts = token.split('.');
+  if (parts.length !== 2) return false;
+  const timestamp = parts[0];
+  const signature = parts[1];
+  const expected = crypto.createHmac('sha256', secret).update(timestamp).digest('hex');
+  if (signature !== expected) return false;
+  const age = Date.now() - parseInt(timestamp, 10);
+  if (age > TOKEN_MAX_AGE_MS) return false;
+  return true;
+}
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL,
@@ -163,11 +178,16 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Verify the request is from Vercel cron or an authorised caller
+  // Verify the request is from Vercel cron or an authenticated user
   const cronSecret = process.env.CRON_SECRET;
+  const authSecret = process.env.AUTH_SECRET;
   const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace('Bearer ', '');
 
-  if (cronSecret && authHeader !== 'Bearer ' + cronSecret) {
+  const isValidCron = cronSecret && token === cronSecret;
+  const isValidUser = authSecret && validateToken(token, authSecret);
+
+  if (!isValidCron && !isValidUser) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

@@ -90,10 +90,11 @@
       padding: 24px 24px 60px;
     }
 
-    /* === Top bar with Refresh button === */
+    /* === Top bar with action buttons === */
     .feed-top-bar {
       display: flex;
       justify-content: flex-end;
+      gap: 10px;
       margin-bottom: 28px;
     }
 
@@ -112,6 +113,28 @@
     .btn-refresh:hover {
       border-color: var(--color-primary);
       color: var(--color-primary);
+    }
+
+    .btn-scan {
+      padding: 8px 16px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .btn-scan:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-scan:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     /* === Feed Section === */
@@ -430,9 +453,10 @@
   <!-- Main Content -->
   <main>
 
-    <!-- Refresh button -->
+    <!-- Action buttons -->
     <div class="feed-top-bar">
       <button class="btn-refresh" id="btnRefresh">Refresh Feed</button>
+      <button class="btn-scan" id="btnScan">Scan for New Jobs</button>
     </div>
 
     <!-- Business Architecture section -->
@@ -723,6 +747,26 @@
 
     document.getElementById('btnRefresh').addEventListener('click', function() {
       loadFeed();
+    });
+
+    document.getElementById('btnScan').addEventListener('click', async function() {
+      var btn = document.getElementById('btnScan');
+      btn.disabled = true;
+      btn.textContent = 'Scanning...';
+      showToast('Scanning for new jobs, please wait...');
+      try {
+        var response = await authFetch('/api/scan', { method: 'POST' });
+        if (!response.ok) throw new Error('Scan failed');
+        var data = await response.json();
+        showToast('Scan complete. Found ' + (data.totalItems || 0) + ' jobs.');
+        await loadFeed();
+      } catch (err) {
+        console.error('Scan error:', err);
+        showToast('Scan failed. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Scan for New Jobs';
+      }
     });
 
     // Card button clicks — use event delegation on each section container
