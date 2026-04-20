@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Feed - Job Application Tracker</title>
+  <style>
+    /* === Reset & Variables === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-bg: #ffffff;
+      --color-bg-alt: #f4f7f5;
+      --color-text: #1a2e1a;
+      --color-text-secondary: #5a6e5a;
+      --color-border: #d4ddd7;
+      --color-primary: #1b3a2a;
+      --color-primary-hover: #264d38;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* === Base === */
+    body {
+      font-family: var(--font);
+      background: var(--color-bg-alt);
+      color: var(--color-text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Header === */
+    header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 24px 24px 20px;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .header-subtitle {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .btn-back {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #fff;
+      color: var(--color-primary);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #f0f0f0;
+    }
+
+    /* === Main Content === */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 24px 60px;
+    }
+
+    /* === Top bar with Refresh button === */
+    .feed-top-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 28px;
+    }
+
+    .btn-refresh {
+      padding: 8px 16px;
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-refresh:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* === Feed Section === */
+    .feed-section {
+      margin-bottom: 40px;
+    }
+
+    .feed-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .feed-section-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .feed-count {
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .feed-section-subtitle {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 14px;
+    }
+
+    /* === Feed Cards Grid === */
+    .feed-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 700px) {
+      .feed-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* === Individual Feed Card === */
+    .feed-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .feed-card-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .feed-card-company {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    .feed-card-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      margin: 8px 0;
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+    }
+
+    .feed-card-desc {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    /* === Source badges === */
+    .feed-source {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .feed-source-reed {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .feed-source-adzuna {
+      background: #fce4ec;
+      color: #c62828;
+    }
+
+    /* === Card link === */
+    .card-link {
+      display: inline-block;
+      font-size: 0.82rem;
+      color: var(--color-primary);
+      text-decoration: none;
+      margin-top: 4px;
+    }
+
+    .card-link:hover {
+      text-decoration: underline;
+    }
+
+    /* === Card action buttons === */
+    .feed-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .btn-track {
+      padding: 6px 14px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .btn-track:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-dismiss {
+      padding: 6px 14px;
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: all 0.2s;
+    }
+
+    .btn-dismiss:hover {
+      border-color: #c62828;
+      color: #c62828;
+    }
+
+    .feed-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+    }
+
+    /* === Divider between the two sections === */
+    .section-divider {
+      border: none;
+      border-top: 2px solid var(--color-border);
+      margin: 0 0 40px;
+    }
+
+    /* === Toast notification === */
+    .sync-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--color-primary);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-family: var(--font);
+      z-index: 3000;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .sync-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* === Login Screen === */
+    #loginScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-bg-alt);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      background: var(--color-bg);
+      padding: 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+    }
+
+    .login-box h2 {
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      font-size: 1.4rem;
+    }
+
+    .login-box p {
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: var(--font);
+      margin-bottom: 12px;
+    }
+
+    .login-box input[type="password"]:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(27, 58, 42, 0.1);
+    }
+
+    .login-box button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.2s;
+    }
+
+    .login-box button[type="submit"]:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .login-error {
+      color: #c62828;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+
+    /* Hide page content until authenticated */
+    .app-hidden header,
+    .app-hidden main,
+    .app-hidden .sync-toast {
+      display: none;
+    }
+  </style>
+</head>
+<body class="app-hidden">
+
+  <!-- Login Screen (shown when not authenticated) -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <h2>Job Tracker</h2>
+      <p>Enter the password to continue</p>
+      <form id="loginForm">
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+        <button type="submit">Sign In</button>
+        <p class="login-error" id="loginError"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>Job Feed</h1>
+        <div class="header-subtitle" id="feedMeta">Loading feed...</div>
+      </div>
+      <a href="/" class="btn-back">Back to Tracker</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Refresh button -->
+    <div class="feed-top-bar">
+      <button class="btn-refresh" id="btnRefresh">Refresh Feed</button>
+    </div>
+
+    <!-- Business Architecture section -->
+    <section class="feed-section">
+      <div class="feed-section-header">
+        <h2>Business Architecture</h2>
+        <span class="feed-count" id="baCount">0</span>
+      </div>
+      <p class="feed-section-subtitle">Contract and permanent. London and remote.</p>
+      <div class="feed-cards" id="baCards"></div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Business Analyst section -->
+    <section class="feed-section">
+      <div class="feed-section-header">
+        <h2>Business Analyst</h2>
+        <span class="feed-count" id="baAnalystCount">0</span>
+      </div>
+      <p class="feed-section-subtitle">Contract only. London and remote.</p>
+      <div class="feed-cards" id="baAnalystCards"></div>
+    </section>
+
+  </main>
+
+  <!-- Toast notification -->
+  <div class="sync-toast" id="syncToast"></div>
+
+  <script>
+    /* === Authentication === */
+    const AUTH_TOKEN_KEY = 'jobTracker_authToken';
+
+    // Wrapper that adds the auth token to every API request
+    function authFetch(url, options) {
+      options = options || {};
+      options.headers = options.headers || {};
+      var token = localStorage.getItem(AUTH_TOKEN_KEY);
+      if (token) {
+        options.headers['Authorization'] = 'Bearer ' + token;
+      }
+      return fetch(url, options);
+    }
+
+    async function checkAuth() {
+      var token = localStorage.getItem(AUTH_TOKEN_KEY);
+      if (!token) {
+        showLogin();
+        return;
+      }
+      try {
+        var response = await fetch('/api/auth', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (response.ok) {
+          hideLogin();
+        } else {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+          showLogin();
+        }
+      } catch (err) {
+        // Network error — assume token is fine and let individual calls fail if not
+        hideLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.body.classList.add('app-hidden');
+    }
+
+    function hideLogin() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.body.classList.remove('app-hidden');
+      loadFeed();
+    }
+
+    async function handleLogin(password) {
+      var errorEl = document.getElementById('loginError');
+      errorEl.textContent = '';
+      try {
+        var response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: password })
+        });
+        if (response.ok) {
+          var data = await response.json();
+          localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+          hideLogin();
+        } else {
+          errorEl.textContent = 'Wrong password. Please try again.';
+        }
+      } catch (err) {
+        errorEl.textContent = 'Connection error. Please try again.';
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleLogin(document.getElementById('loginPassword').value);
+    });
+
+    /* === Feed State === */
+    var feedItems = [];
+    var feedMeta = {};
+
+    /* === Helpers === */
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Parse Reed's DD/MM/YYYY format as well as standard ISO dates
+    function parseDate(str) {
+      if (!str) return null;
+      var parts = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (parts) {
+        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]));
+      }
+      return new Date(str);
+    }
+
+    function formatDatePosted(dateStr) {
+      if (!dateStr) return null;
+      var d = parseDate(dateStr);
+      if (!d || isNaN(d.getTime())) return null;
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    // Returns true if the location is London, remote, or unspecified (blank)
+    function isLondonOrRemote(location) {
+      if (!location) return true;
+      var loc = location.toLowerCase();
+      return loc.indexOf('london') !== -1 ||
+             loc.indexOf('remote') !== -1 ||
+             loc.indexOf('home based') !== -1 ||
+             loc.indexOf('work from home') !== -1;
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById('syncToast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 5000);
+    }
+
+    /* === Feed Loading === */
+
+    async function loadFeed() {
+      document.getElementById('feedMeta').textContent = 'Loading feed...';
+      try {
+        var response = await authFetch('/api/feed');
+        if (!response.ok) throw new Error('Feed fetch failed');
+        var data = await response.json();
+        feedItems = data.items || [];
+        feedMeta = data.meta || {};
+        renderFeed();
+      } catch (err) {
+        console.error('Failed to load feed:', err);
+        document.getElementById('feedMeta').textContent = 'Could not load feed';
+      }
+    }
+
+    function renderFeed() {
+      // Update the last-scanned text in the header
+      var metaEl = document.getElementById('feedMeta');
+      if (feedMeta.lastScan) {
+        var hoursAgo = Math.round((new Date() - new Date(feedMeta.lastScan)) / (1000 * 60 * 60));
+        if (hoursAgo < 1) {
+          metaEl.textContent = 'Last scanned: just now';
+        } else if (hoursAgo < 24) {
+          metaEl.textContent = 'Last scanned: ' + hoursAgo + ' hour' + (hoursAgo !== 1 ? 's' : '') + ' ago';
+        } else {
+          var daysAgo = Math.round(hoursAgo / 24);
+          metaEl.textContent = 'Last scanned: ' + daysAgo + ' day' + (daysAgo !== 1 ? 's' : '') + ' ago';
+        }
+      } else {
+        metaEl.textContent = 'No scans yet';
+      }
+
+      // Split into the two categories, keeping only London and remote roles
+      var baItems = feedItems.filter(function(item) {
+        return item.category === 'business-architecture' && isLondonOrRemote(item.location);
+      });
+      var baAnalystItems = feedItems.filter(function(item) {
+        return item.category === 'business-analyst' && isLondonOrRemote(item.location);
+      });
+
+      // Sort each list with the newest posting at the top
+      function sortNewest(arr) {
+        return arr.slice().sort(function(a, b) {
+          var da = a.datePosted ? parseDate(a.datePosted) : new Date(0);
+          var db = b.datePosted ? parseDate(b.datePosted) : new Date(0);
+          return db - da;
+        });
+      }
+
+      renderSection('baCards', 'baCount', sortNewest(baItems),
+        'No Business Architecture jobs found. The feed scans daily for London and remote roles.');
+      renderSection('baAnalystCards', 'baAnalystCount', sortNewest(baAnalystItems),
+        'No Business Analyst jobs found. The feed scans daily for London and remote contract roles.');
+    }
+
+    function renderSection(containerId, countId, items, emptyMessage) {
+      var container = document.getElementById(containerId);
+      document.getElementById(countId).textContent = items.length;
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="feed-empty">' + emptyMessage + '</div>';
+        return;
+      }
+
+      var html = '';
+      items.forEach(function(item) {
+        var details = '';
+        if (item.location) details += '<span>' + escapeHtml(item.location) + '</span>';
+        if (item.salaryText) details += '<span>' + escapeHtml(String(item.salaryText)) + '</span>';
+        if (item.jobType) {
+          details += '<span>' + (item.jobType === 'permanent' ? 'Permanent' : 'Contract') + '</span>';
+        }
+        var dateStr = formatDatePosted(item.datePosted);
+        if (dateStr) details += '<span>Posted ' + dateStr + '</span>';
+
+        html += '<div class="feed-card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
+            '<div>' +
+              '<div class="feed-card-title">' + escapeHtml(item.title) + '</div>' +
+              '<div class="feed-card-company">' + escapeHtml(item.company) + '</div>' +
+            '</div>' +
+            '<span class="feed-source feed-source-' + escapeHtml(item.source) + '">' + escapeHtml(item.source) + '</span>' +
+          '</div>' +
+          (details ? '<div class="feed-card-details">' + details + '</div>' : '') +
+          (item.description ? '<div class="feed-card-desc">' + escapeHtml(item.description) + '</div>' : '') +
+          (item.jobLink ? '<a class="card-link" href="' + escapeHtml(item.jobLink) + '" target="_blank" rel="noopener">View original listing</a>' : '') +
+          '<div class="feed-card-actions">' +
+            '<button class="btn-track" data-feed-id="' + escapeHtml(item.id) + '" data-action="add">+ Add to Tracker</button>' +
+            '<button class="btn-dismiss" data-feed-id="' + escapeHtml(item.id) + '" data-action="dismiss">Dismiss</button>' +
+          '</div>' +
+        '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    /* === Feed Actions === */
+
+    async function dismissFeedItem(feedItemId) {
+      try {
+        var response = await authFetch('/api/feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'dismiss', feedItemId: feedItemId }),
+        });
+        if (!response.ok) throw new Error('Dismiss failed');
+        feedItems = feedItems.filter(function(item) { return item.id !== feedItemId; });
+        renderFeed();
+        showToast('Job dismissed');
+      } catch (err) {
+        console.error('Dismiss error:', err);
+        showToast('Failed to dismiss job');
+      }
+    }
+
+    async function addFeedToTracker(feedItemId) {
+      try {
+        var response = await authFetch('/api/feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'add-to-tracker', feedItemId: feedItemId }),
+        });
+        if (!response.ok) throw new Error('Add to tracker failed');
+        feedItems = feedItems.filter(function(item) { return item.id !== feedItemId; });
+        renderFeed();
+        showToast('Job added to your tracker');
+      } catch (err) {
+        console.error('Add to tracker error:', err);
+        showToast('Failed to add job to tracker');
+      }
+    }
+
+    /* === Event Listeners === */
+
+    document.getElementById('btnRefresh').addEventListener('click', function() {
+      loadFeed();
+    });
+
+    // Card button clicks — use event delegation on each section container
+    ['baCards', 'baAnalystCards'].forEach(function(id) {
+      document.getElementById(id).addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-feed-id]');
+        if (!btn) return;
+        var feedId = btn.dataset.feedId;
+        var action = btn.dataset.action;
+        if (action === 'add') {
+          addFeedToTracker(feedId);
+        } else if (action === 'dismiss') {
+          dismissFeedItem(feedId);
+        }
+      });
+    });
+
+    /* === Start === */
+    checkAuth();
+  </script>
+</body>
+</html>

@@ -8,8 +8,11 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN,
 });
 
-// Search term used for all job board queries
-const SEARCH_KEYWORDS = 'Business Architect';
+// Each search defines keywords, which job types to fetch, and which feed category to tag items with
+const SEARCHES = [
+  { keywords: 'Business Architect', contract: true, permanent: true, category: 'business-architecture' },
+  { keywords: 'Business Analyst', contract: true, permanent: false, category: 'business-analyst' },
+];
 
 // --- Reed API ---
 async function fetchReed() {
@@ -19,14 +22,36 @@ async function fetchReed() {
     return [];
   }
 
-  // Basic auth: API key as username, empty password
   const auth = Buffer.from(apiKey + ':').toString('base64');
+  const allResults = [];
 
+  for (const search of SEARCHES) {
+    // Reed: run a contract search if wanted
+    if (search.contract) {
+      const contractResults = await fetchReedSearch(auth, search.keywords, true, search.category);
+      allResults.push(...contractResults);
+    }
+    // Reed: run a permanent search if wanted
+    if (search.permanent) {
+      const permResults = await fetchReedSearch(auth, search.keywords, false, search.category);
+      allResults.push(...permResults);
+    }
+  }
+
+  return allResults;
+}
+
+// Single Reed API call for a given keyword + contract/permanent flag
+async function fetchReedSearch(auth, keywords, isContract, category) {
   const params = new URLSearchParams({
-    keywords: SEARCH_KEYWORDS,
+    keywords: keywords,
     resultsToTake: '50',
-    contract: 'true',
   });
+  if (isContract) {
+    params.set('contract', 'true');
+  } else {
+    params.set('permanent', 'true');
+  }
 
   const url = 'https://www.reed.co.uk/api/1.0/search?' + params.toString();
   const res = await fetch(url, {
@@ -48,18 +73,18 @@ async function fetchReed() {
       company: job.employerName || '',
       location: job.locationName || '',
       salaryText: formatSalary(job.minimumSalary, job.maximumSalary),
-      jobType: 'contract',
+      jobType: isContract ? 'contract' : 'permanent',
       datePosted: job.date || '',
       description: (job.jobDescription || '').substring(0, 200),
       jobLink: 'https://www.reed.co.uk/jobs/' + job.jobId,
       source: 'reed',
+      category: category || '',
     };
   });
 }
 
 // --- Adzuna API ---
 async function fetchAdzuna() {
-  // Trim whitespace/newlines that may be stuck on the env var values
   const appId = (process.env.ADZUNA_APP_ID || '').trim();
   const appKey = (process.env.ADZUNA_APP_KEY || '').trim();
   if (!appId || !appKey) {
@@ -67,10 +92,30 @@ async function fetchAdzuna() {
     return [];
   }
 
+  const allResults = [];
+
+  for (const search of SEARCHES) {
+    const results = await fetchAdzunaSearch(appId, appKey, search.keywords, search.category);
+
+    // If this search only wants contract, filter out permanent results
+    if (search.contract && !search.permanent) {
+      allResults.push(...results.filter(function (job) {
+        return job.jobType !== 'permanent';
+      }));
+    } else {
+      allResults.push(...results);
+    }
+  }
+
+  return allResults;
+}
+
+// Single Adzuna API call for a given keyword
+async function fetchAdzunaSearch(appId, appKey, keywords, category) {
   const params = new URLSearchParams({
     app_id: appId,
     app_key: appKey,
-    what: SEARCH_KEYWORDS,
+    what: keywords,
     results_per_page: '50',
     'content-type': 'application/json',
   });
@@ -98,6 +143,7 @@ async function fetchAdzuna() {
       description: (job.description || '').substring(0, 200),
       jobLink: job.redirect_url || '',
       source: 'adzuna',
+      category: category || '',
     };
   });
 }

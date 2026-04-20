@@ -1090,183 +1090,6 @@
       flex-shrink: 0;
     }
 
-    /* === Job Feed Section === */
-    .feed-section {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 2px solid var(--color-border);
-    }
-
-    .feed-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .feed-header h2 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .feed-count {
-      background: var(--color-primary);
-      color: #fff;
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
-    .feed-meta {
-      font-size: 0.8rem;
-      color: var(--color-text-secondary);
-    }
-
-    .feed-cards {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media (min-width: 700px) {
-      .feed-cards {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .feed-card {
-      background: var(--color-bg);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .feed-card-title {
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .feed-card-company {
-      font-size: 0.9rem;
-      color: var(--color-text-secondary);
-      margin-top: 2px;
-    }
-
-    .feed-card-details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px 14px;
-      margin: 8px 0;
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
-    }
-
-    .feed-card-desc {
-      font-size: 0.82rem;
-      color: var(--color-text-secondary);
-      margin: 8px 0;
-      line-height: 1.5;
-    }
-
-    .feed-source {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      flex-shrink: 0;
-    }
-
-    .feed-source-reed {
-      background: #e3f2fd;
-      color: #1565c0;
-    }
-
-    .feed-source-adzuna {
-      background: #fce4ec;
-      color: #c62828;
-    }
-
-    .feed-source-jooble {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    .feed-card-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--color-border);
-    }
-
-    .btn-track {
-      padding: 6px 14px;
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: var(--font);
-      transition: background 0.2s;
-    }
-
-    .btn-track:hover {
-      background: var(--color-primary-hover);
-    }
-
-    .btn-dismiss {
-      padding: 6px 14px;
-      background: transparent;
-      color: var(--color-text-secondary);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      font-size: 0.82rem;
-      cursor: pointer;
-      font-family: var(--font);
-      transition: all 0.2s;
-    }
-
-    .btn-dismiss:hover {
-      border-color: var(--status-rejected);
-      color: var(--status-rejected);
-    }
-
-    .feed-empty {
-      text-align: center;
-      padding: 32px 16px;
-      color: var(--color-text-secondary);
-      font-size: 0.9rem;
-      grid-column: 1 / -1;
-    }
-
-    .btn-refresh-feed {
-      padding: 6px 14px;
-      background: transparent;
-      color: var(--color-text-secondary);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      font-size: 0.82rem;
-      cursor: pointer;
-      font-family: var(--font);
-      transition: all 0.2s;
-    }
-
-    .btn-refresh-feed:hover {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-
     /* === Login Screen === */
     #loginScreen {
       position: fixed;
@@ -1951,6 +1774,7 @@
         <div class="sync-status" id="syncStatus"></div>
       </div>
       <div class="header-buttons">
+        <a href="/feed.html" class="btn-add" style="text-decoration:none">Job Feed</a>
         <a href="/interview-prep.html" class="btn-add" style="text-decoration:none">Interview Prep</a>
         <button class="btn-add" id="btnAdd">+ Add New Job</button>
       </div>
@@ -1976,7 +1800,8 @@
 
     <!-- Filter Buttons -->
     <nav class="filter-bar" id="filterBar">
-      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn active" data-filter="active">Active</button>
+      <button class="filter-btn" data-filter="all">All</button>
       <button class="filter-btn" data-filter="applied">Applied</button>
       <button class="filter-btn" data-filter="want-to-apply">Want to Apply</button>
       <button class="filter-btn" data-filter="interview">Interview</button>
@@ -2010,20 +1835,6 @@
     <!-- Job Cards / List -->
     <section class="cards-container view-cards" id="cardsContainer"></section>
 
-    <!-- Job Feed (auto-discovered jobs from Reed and Adzuna) -->
-    <section class="feed-section" id="feedSection">
-      <div class="feed-header">
-        <h2>
-          Job Feed
-          <span class="feed-count" id="feedCount">0</span>
-        </h2>
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="feed-meta" id="feedMeta">Loading feed...</span>
-          <button class="btn-refresh-feed" id="btnRefreshFeed" title="Reload feed from server">Refresh</button>
-        </div>
-      </div>
-      <div class="feed-cards" id="feedCards"></div>
-    </section>
     </div><!-- end jobsView -->
 
     <!-- === RECRUITERS VIEW (hidden by default) === -->
@@ -2287,7 +2098,6 @@
     // Called after successful authentication
     function initApp() {
       initJobs();
-      loadFeed();
       initRecruiters();
     }
 
@@ -2327,7 +2137,7 @@
 
     /* === State === */
     let jobs = [];
-    let activeFilter = 'all';
+    let activeFilter = 'active';
     let searchTerm = '';
     let sortBy = 'rate-high';
     let viewMode = 'cards';
@@ -2487,7 +2297,11 @@
       let filtered = jobs.slice();
 
       // Filter by status
-      if (activeFilter !== 'all') {
+      if (activeFilter === 'active') {
+        filtered = filtered.filter(function(job) {
+          return job.status !== 'rejected';
+        });
+      } else if (activeFilter !== 'all') {
         filtered = filtered.filter(function(job) {
           return job.status === activeFilter;
         });
@@ -2987,167 +2801,6 @@
     function closeConfirm() {
       confirmOverlay.classList.remove('open');
       deleteId = null;
-    }
-
-    /* === Job Feed State === */
-    let feedItems = [];
-    let feedMeta = {};
-
-    /* === Feed Functions === */
-
-    // Parse a date string that might be in DD/MM/YYYY format (from Reed)
-    // or standard ISO format (from Adzuna/Jooble)
-    function parseDate(str) {
-      if (!str) return null;
-      // Check for DD/MM/YYYY pattern
-      var parts = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-      if (parts) {
-        return new Date(parseInt(parts[3]), parseInt(parts[2]) - 1, parseInt(parts[1]));
-      }
-      return new Date(str);
-    }
-
-    // Load feed items from the server
-    async function loadFeed() {
-      var feedMetaEl = document.getElementById('feedMeta');
-      var feedCountEl = document.getElementById('feedCount');
-      feedMetaEl.textContent = 'Loading feed...';
-
-      try {
-        var response = await authFetch('/api/feed');
-        if (!response.ok) throw new Error('Feed fetch failed');
-        var data = await response.json();
-
-        feedItems = data.items || [];
-        feedMeta = data.meta || {};
-        renderFeed();
-      } catch (err) {
-        console.error('Failed to load feed:', err);
-        feedMetaEl.textContent = 'Could not load feed';
-        feedCountEl.textContent = '0';
-      }
-    }
-
-    // Render feed cards
-    function renderFeed() {
-      var container = document.getElementById('feedCards');
-      var feedCountEl = document.getElementById('feedCount');
-      var feedMetaEl = document.getElementById('feedMeta');
-
-      feedCountEl.textContent = feedItems.length;
-
-      // Show when the last scan happened
-      if (feedMeta.lastScan) {
-        var scanDate = new Date(feedMeta.lastScan);
-        var now = new Date();
-        var hoursAgo = Math.round((now - scanDate) / (1000 * 60 * 60));
-        if (hoursAgo < 1) {
-          feedMetaEl.textContent = 'Last scanned: just now';
-        } else if (hoursAgo < 24) {
-          feedMetaEl.textContent = 'Last scanned: ' + hoursAgo + ' hour' + (hoursAgo !== 1 ? 's' : '') + ' ago';
-        } else {
-          var daysAgo = Math.round(hoursAgo / 24);
-          feedMetaEl.textContent = 'Last scanned: ' + daysAgo + ' day' + (daysAgo !== 1 ? 's' : '') + ' ago';
-        }
-      } else {
-        feedMetaEl.textContent = 'No scans yet';
-      }
-
-      if (feedItems.length === 0) {
-        container.innerHTML = '<div class="feed-empty">No new jobs found. The feed scans daily for "Business Architect" roles on Reed and Adzuna.</div>';
-        return;
-      }
-
-      // Sort by most recently published first
-      feedItems.sort(function(a, b) {
-        var dateA = a.datePosted ? parseDate(a.datePosted) : new Date(0);
-        var dateB = b.datePosted ? parseDate(b.datePosted) : new Date(0);
-        return dateB - dateA;
-      });
-
-      var html = '';
-      feedItems.forEach(function(item) {
-        var sourceClass = 'feed-source feed-source-' + item.source;
-
-        var details = '';
-        if (item.location) details += '<span>' + escapeHtml(item.location) + '</span>';
-        if (item.salaryText) details += '<span>' + escapeHtml(String(item.salaryText)) + '</span>';
-        if (item.jobType) {
-          var typeLabel = item.jobType === 'permanent' ? 'Permanent' : 'Contract';
-          details += '<span>' + typeLabel + '</span>';
-        }
-        if (item.datePosted) {
-          var posted = parseDate(item.datePosted);
-          if (posted && !isNaN(posted.getTime())) {
-            var day = posted.getDate();
-            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            var dateStr = day + ' ' + months[posted.getMonth()] + ' ' + posted.getFullYear();
-            details += '<span>Posted ' + dateStr + '</span>';
-          }
-        }
-
-        html += '<div class="feed-card">' +
-          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
-            '<div>' +
-              '<div class="feed-card-title">' + escapeHtml(item.title) + '</div>' +
-              '<div class="feed-card-company">' + escapeHtml(item.company) + '</div>' +
-            '</div>' +
-            '<span class="' + sourceClass + '">' + item.source + '</span>' +
-          '</div>' +
-          (details ? '<div class="feed-card-details">' + details + '</div>' : '') +
-          (item.description ? '<div class="feed-card-desc">' + escapeHtml(item.description) + '</div>' : '') +
-          (item.jobLink ? '<a class="card-link" href="' + escapeHtml(item.jobLink) + '" target="_blank" rel="noopener">View original listing</a>' : '') +
-          '<div class="feed-card-actions">' +
-            '<button class="btn-track" data-feed-id="' + item.id + '" data-action="add">+ Add to Tracker</button>' +
-            '<button class="btn-dismiss" data-feed-id="' + item.id + '" data-action="dismiss">Dismiss</button>' +
-          '</div>' +
-        '</div>';
-      });
-
-      container.innerHTML = html;
-    }
-
-    // Dismiss a feed item (hide it permanently)
-    async function dismissFeedItem(feedItemId) {
-      try {
-        var response = await authFetch('/api/feed', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'dismiss', feedItemId: feedItemId }),
-        });
-        if (!response.ok) throw new Error('Dismiss failed');
-
-        // Remove from local array and re-render
-        feedItems = feedItems.filter(function(item) { return item.id !== feedItemId; });
-        renderFeed();
-        showToast('Job dismissed');
-      } catch (err) {
-        console.error('Dismiss error:', err);
-        showToast('Failed to dismiss job');
-      }
-    }
-
-    // Add a feed item to the main job tracker
-    async function addFeedToTracker(feedItemId) {
-      try {
-        var response = await authFetch('/api/feed', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'add-to-tracker', feedItemId: feedItemId }),
-        });
-        if (!response.ok) throw new Error('Add to tracker failed');
-
-        // Remove from feed and re-render feed
-        feedItems = feedItems.filter(function(item) { return item.id !== feedItemId; });
-        renderFeed();
-
-        // Reload the main job list so the new job appears
-        await initJobs();
-        showToast('Job added to your tracker');
-      } catch (err) {
-        console.error('Add to tracker error:', err);
-        showToast('Failed to add job to tracker');
-      }
     }
 
     /* ================================================================
@@ -3702,25 +3355,6 @@
         });
       });
 
-      // Feed card button clicks (event delegation)
-      document.getElementById('feedCards').addEventListener('click', function(e) {
-        var btn = e.target.closest('[data-feed-id]');
-        if (!btn) return;
-
-        var feedId = btn.dataset.feedId;
-        var action = btn.dataset.action;
-
-        if (action === 'add') {
-          addFeedToTracker(feedId);
-        } else if (action === 'dismiss') {
-          dismissFeedItem(feedId);
-        }
-      });
-
-      // Refresh feed button
-      document.getElementById('btnRefreshFeed').addEventListener('click', function() {
-        loadFeed();
-      });
 
       // Escape key closes modals
       document.addEventListener('keydown', function(e) {
