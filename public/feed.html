@@ -137,20 +137,38 @@
       cursor: not-allowed;
     }
 
-    /* === Feed Section === */
-    .feed-section {
-      margin-bottom: 40px;
+    /* === Tabs === */
+    .feed-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--color-border);
     }
 
-    .feed-section-header {
+    .feed-tab {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      font-family: var(--font);
+      color: var(--color-text-secondary);
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 4px;
+      gap: 8px;
+      transition: color 0.15s;
     }
 
-    .feed-section-header h2 {
-      font-size: 1.1rem;
+    .feed-tab:hover {
+      color: var(--color-primary);
+    }
+
+    .feed-tab.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
       font-weight: 600;
     }
 
@@ -163,7 +181,21 @@
       font-weight: 600;
     }
 
-    .feed-section-subtitle {
+    .feed-tab:not(.active) .feed-count {
+      background: var(--color-border);
+      color: var(--color-text-secondary);
+    }
+
+    /* === Feed Panel (one per tab) === */
+    .feed-panel {
+      display: none;
+    }
+
+    .feed-panel.active {
+      display: block;
+    }
+
+    .feed-panel-subtitle {
       font-size: 0.82rem;
       color: var(--color-text-secondary);
       margin-bottom: 14px;
@@ -304,13 +336,6 @@
       background: var(--color-bg);
       border: 1px solid var(--color-border);
       border-radius: var(--radius);
-    }
-
-    /* === Divider between the two sections === */
-    .section-divider {
-      border: none;
-      border-top: 2px solid var(--color-border);
-      margin: 0 0 40px;
     }
 
     /* === Toast notification === */
@@ -459,27 +484,27 @@
       <button class="btn-scan" id="btnScan">Scan for New Jobs</button>
     </div>
 
-    <!-- Business Architecture section -->
-    <section class="feed-section">
-      <div class="feed-section-header">
-        <h2>Business Architecture</h2>
-        <span class="feed-count" id="baCount">0</span>
-      </div>
-      <p class="feed-section-subtitle">Contract and permanent. London and remote.</p>
+    <!-- Tabs -->
+    <nav class="feed-tabs">
+      <button class="feed-tab active" data-tab="ba">
+        Business Architecture <span class="feed-count" id="baCount">0</span>
+      </button>
+      <button class="feed-tab" data-tab="baAnalyst">
+        Business Analyst <span class="feed-count" id="baAnalystCount">0</span>
+      </button>
+    </nav>
+
+    <!-- Business Architecture panel -->
+    <div class="feed-panel active" id="panel-ba">
+      <p class="feed-panel-subtitle">Contract and permanent. London and remote.</p>
       <div class="feed-cards" id="baCards"></div>
-    </section>
+    </div>
 
-    <hr class="section-divider">
-
-    <!-- Business Analyst section -->
-    <section class="feed-section">
-      <div class="feed-section-header">
-        <h2>Business Analyst</h2>
-        <span class="feed-count" id="baAnalystCount">0</span>
-      </div>
-      <p class="feed-section-subtitle">Contract only. London and remote.</p>
+    <!-- Business Analyst panel -->
+    <div class="feed-panel" id="panel-baAnalyst">
+      <p class="feed-panel-subtitle">Contract only. London and remote.</p>
       <div class="feed-cards" id="baAnalystCards"></div>
-    </section>
+    </div>
 
   </main>
 
@@ -742,6 +767,20 @@
         showToast('Failed to add job to tracker');
       }
     }
+
+    /* === Tab Switching === */
+
+    document.querySelector('.feed-tabs').addEventListener('click', function(e) {
+      var tab = e.target.closest('.feed-tab');
+      if (!tab) return;
+      var target = tab.dataset.tab;
+
+      document.querySelectorAll('.feed-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.feed-panel').forEach(function(p) { p.classList.remove('active'); });
+
+      tab.classList.add('active');
+      document.getElementById('panel-' + target).classList.add('active');
+    });
 
     /* === Event Listeners === */
 
